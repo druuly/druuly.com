@@ -72,6 +72,14 @@
   transition: color var(--dur-fast) var(--ease),
               border-color var(--dur-fast) var(--ease);
 }
+
+/* Each link gets its own vivid pastel, so the row reads as a clear mix. */
+.intro__links li:nth-child(1) a { color: var(--peach-vivid); }
+.intro__links li:nth-child(2) a { color: var(--lilac-vivid); }
+.intro__links li:nth-child(3) a { color: var(--pink-vivid); }
+.intro__links li:nth-child(4) a { color: var(--butter-vivid); }
+.intro__links li:nth-child(5) a { color: var(--teal-vivid); }
+
 .intro__links a:hover { color: var(--orange); border-bottom-color: currentColor; }
 
 .intro__portrait { justify-self: end; width: 100%; max-width: 340px; }

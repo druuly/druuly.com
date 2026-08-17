@@ -16,16 +16,20 @@
   --rule:       #e0dbd1; /* hairlines and borders */
 
   /* --- the pastels -------------------------------------------------------
-     Two depths of the same six hues.
+     Three depths of the same hues.
      *-pale  → fills, rules, washes. Never set type in these.
      (unsuffixed) → the type colors. Dusty rather than candy, because a pale
-     pastel on a pale ground is unreadable; these still land ~4.5:1 on paper. */
-  --blue:   #55809f;   --blue-pale:   #a9c4d8;
-  --pink:   #ab6a79;   --pink-pale:   #e8b4bd;
-  --mint:   #5a8b71;   --mint-pale:   #a9ccb8;
-  --lilac:  #786a9c;   --lilac-pale:  #bdb2d4;
-  --butter: #8f7538;   --butter-pale: #e6cf9a;
-  --peach:  #ac6f4f;   --peach-pale:  #e9bda0;
+     pastel on a pale ground is unreadable; these still land ~4.5:1 on paper.
+     *-vivid → a brighter, more saturated pop of the same hue. Used sparingly,
+     where a handful of links need to read as visibly distinct colors rather
+     than one dusty voice repeated. */
+  --blue:   #55809f;   --blue-pale:   #a9c4d8;   --blue-vivid:   #1f83c4;
+  --pink:   #ab6a79;   --pink-pale:   #e8b4bd;   --pink-vivid:   #d43d68;
+  --mint:   #5a8b71;   --mint-pale:   #a9ccb8;   --mint-vivid:   #1fa25e;
+  --lilac:  #786a9c;   --lilac-pale:  #bdb2d4;   --lilac-vivid:  #8347d6;
+  --butter: #8f7538;   --butter-pale: #e6cf9a;   --butter-vivid: #c99417;
+  --peach:  #ac6f4f;   --peach-pale:  #e9bda0;   --peach-vivid:  #e0642f;
+  --teal:   #3f8f82;   --teal-pale:   #a6d3cb;   --teal-vivid:   #0f9686;
 
   /* Orange lives outside the pastel set — it's the one hot color, reserved
      for the interpunct in the wordmark. */

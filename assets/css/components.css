@@ -27,11 +27,11 @@
   /* Optical centering — the interpunct sits high in most serifs. */
   display: inline-block;
   padding-inline: 0.06em;
-  transition: transform var(--dur-slow) var(--ease-out);
+  transition: transform var(--dur-fast) var(--ease-out);
 }
 
-/* The dot rolls when you hover the mark. Small, once, never loops. */
-.wordmark:hover .wordmark__dot { transform: rotate(180deg) scale(1.15); }
+/* A quick, direct pop on hover — no rotation, no drift. */
+.wordmark:hover .wordmark__dot { transform: scale(1.35); }
 
 .wordmark--sm   { font-size: var(--t-lead); }
 .wordmark--mega { font-size: var(--t-mega); letter-spacing: -0.045em; }
