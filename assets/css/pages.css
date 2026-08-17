@@ -1,0 +1,279 @@
+/* ==========================================================================
+   pages.css — styles that only make sense on one kind of page.
+   Anything used twice should be promoted to components.css instead.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   HERO (home)
+   A near-full-height opening: the wordmark, the definition line, and one
+   piece of ambient media behind it.
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: calc(100svh - var(--header-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: var(--s-9) var(--s-7);
+  overflow: hidden;
+}
+
+/* Optional background film. Sits behind everything, heavily faded so the
+   serif stays readable. Swap the <video> source and delete the placeholder. */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.14;
+  filter: grayscale(100%) contrast(115%);
+  pointer-events: none;
+}
+.hero__media video,
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Paper fades in at the bottom so the hero dissolves into the next section. */
+.hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, var(--paper) 100%);
+}
+
+.hero__inner { position: relative; z-index: 1; }
+
+.hero__mark { margin-bottom: var(--s-4); }
+
+.hero__caption {
+  font-size: var(--t-lead);
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 34ch;
+  margin-bottom: var(--s-7);
+}
+
+/* The row of small facts pinned to the bottom of the hero. */
+.hero__footnotes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   PAGE HEADER (work / writing / about)
+   A quieter version of the hero for interior pages.
+   -------------------------------------------------------------------------- */
+
+.page-head {
+  padding-block: var(--s-9) var(--s-7);
+  border-bottom: 1px solid var(--rule);
+}
+
+.page-head__title {
+  font-size: var(--t-h1);
+  margin-bottom: var(--s-4);
+}
+
+/* --------------------------------------------------------------------------
+   FEATURE — one project given the full width, alternating image side.
+   -------------------------------------------------------------------------- */
+
+.feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--s-7);
+}
+
+/* .feature--flip puts the media on the right instead of the left. */
+.feature--flip .feature__media { order: 2; }
+
+.feature__body { display: flex; flex-direction: column; gap: var(--s-4); }
+
+@media (max-width: 860px) {
+  .feature { grid-template-columns: 1fr; gap: var(--s-5); }
+  .feature--flip .feature__media { order: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   MEDIA STRIP — a horizontally scrolling row of loops. The "fluid" bit.
+   Snap-scrolls on touch, drag-free on desktop.
+   -------------------------------------------------------------------------- */
+
+.strip {
+  display: flex;
+  gap: var(--s-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--s-4);
+  /* Bleed past the container edges so it reads as an endless roll. */
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.strip::-webkit-scrollbar { display: none; }
+
+.strip__item {
+  flex: 0 0 clamp(220px, 26vw, 340px);
+  scroll-snap-align: start;
+}
+
+/* --------------------------------------------------------------------------
+   ARTICLE — the reading view. Narrow measure, generous leading.
+   -------------------------------------------------------------------------- */
+
+.article { padding-block: var(--s-8); }
+
+.article__head {
+  max-width: var(--measure);
+  margin-inline: auto;
+  margin-bottom: var(--s-8);
+}
+
+.article__title {
+  font-size: var(--t-h2);
+  line-height: 1.05;
+  margin-block: var(--s-4);
+}
+
+.article__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Everything inside .prose is unclassed HTML — write posts as plain markup. */
+.prose {
+  max-width: var(--measure);
+  margin-inline: auto;
+  font-size: var(--t-body);
+  line-height: 1.75;
+}
+
+.prose > * + *  { margin-top: var(--s-5); }
+.prose h2       { font-size: var(--t-h3); margin-top: var(--s-8); }
+.prose h3       { font-size: var(--t-lead); margin-top: var(--s-7); }
+.prose h2 + p,
+.prose h3 + p   { margin-top: var(--s-3); }
+
+/* A drop-cap-ish opener: first paragraph after the head runs slightly larger. */
+.prose > p:first-child {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.prose figure { margin-top: var(--s-7); }
+
+/* On wide screens figures break out past the text measure for emphasis.
+   Add class="prose__bleed" to any figure that should do this. */
+@media (min-width: 1000px) {
+  .prose__bleed { margin-inline: -6rem; }
+}
+
+.prose figcaption {
+  font-style: italic;
+  font-size: var(--t-sm);
+  color: var(--muted);
+  margin-top: var(--s-3);
+}
+
+/* Footer of an article: previous / next. */
+.article__nav {
+  max-width: var(--measure);
+  margin: var(--s-9) auto 0;
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+
+/* --------------------------------------------------------------------------
+   ABOUT — portrait plus a two-column fact list.
+   -------------------------------------------------------------------------- */
+
+.about__portrait { position: sticky; top: calc(var(--header-h) + var(--s-6)); }
+
+@media (max-width: 900px) {
+  .about__portrait { position: static; }
+}
+
+/* Definition list used for "now", "tools", "elsewhere". */
+.deflist {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--s-3) var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.deflist dt {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.deflist dd { margin: 0; color: var(--ink-soft); }
+
+@media (max-width: 560px) {
+  .deflist { grid-template-columns: 1fr; gap: var(--s-1) 0; }
+  .deflist dd { margin-bottom: var(--s-4); }
+}
+
+/* --------------------------------------------------------------------------
+   FILTERS — the row of buttons above the work grid.
+   -------------------------------------------------------------------------- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-7);
+}
+
+.filter {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: 0.45em 1.1em;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+
+.filter:hover { color: var(--ink); border-color: var(--muted); }
+
+.filter[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Hidden by filter.js when a card doesn't match the active tag. */
+.is-filtered-out { display: none; }

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>About — dru·uly</title>
+  <meta name="description" content="Who druuly is, what this site is, and how it was made.">
+  <meta name="theme-color" content="#f4f1ec">
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="module" src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- HEADER — copy of index.html -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="wordmark wordmark--sm" href="index.html" aria-label="druuly — home">
+        dru<span class="wordmark__dot">·</span>uly
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <a class="nav__link" href="index.html">Index</a>
+        <a class="nav__link" href="work.html">Work</a>
+        <a class="nav__link" href="writing.html">Writing</a>
+        <a class="nav__link" href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-head wrap">
+      <p class="eyebrow">About</p>
+      <h1 class="page-head__title">dru<span class="wordmark__dot">·</span>uly</h1>
+      <p class="lede">lorem ipsum dolor sit amet (consectetur adipiscing)</p>
+    </section>
+
+    <!-- ==================================================================
+         BIO — portrait sticks while the text scrolls past it.
+         ================================================================== -->
+    <section class="section wrap">
+      <div class="grid">
+
+        <div class="col-5 about__portrait" data-reveal>
+          <div class="frame frame--portrait">
+            <div class="frame__placeholder">Portrait &mdash; 3:4</div>
+          </div>
+          <p class="caption">Lorem ipsum, somewhere, 2026</p>
+        </div>
+
+        <div class="col-6 offset-1" data-reveal data-reveal-delay="120">
+          <p class="lede" style="max-width:none;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+
+          <p style="margin-top:var(--s-5); color:var(--ink-soft);">
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur.
+          </p>
+
+          <p style="margin-top:var(--s-5); color:var(--ink-soft);">
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum. Sed ut perspiciatis
+            unde omnis iste natus error sit voluptatem accusantium.
+          </p>
+
+          <!-- Fact list. Add or remove pairs freely. -->
+          <dl class="deflist" style="margin-top:var(--s-7);">
+            <dt>Now</dt>
+            <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
+
+            <dt>Before</dt>
+            <dd>Sed do eiusmod tempor incididunt ut labore.</dd>
+
+            <dt>Tools</dt>
+            <dd>Lorem, Ipsum, Dolor, Sit, Amet</dd>
+
+            <dt>Elsewhere</dt>
+            <dd>
+              <a href="#">Instagram</a> &middot;
+              <a href="#">GitHub</a> &middot;
+              <a href="#">Are.na</a>
+            </dd>
+
+            <dt>Contact</dt>
+            <dd><a href="mailto:hello@example.com">hello@example.com</a></dd>
+          </dl>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         COLOPHON — how the site is built. Keep it, people like these.
+         ================================================================== -->
+    <section class="section section--ruled wrap">
+      <div class="grid">
+        <div class="col-4">
+          <p class="eyebrow">Colophon</p>
+        </div>
+
+        <div class="col-7 offset-1" data-reveal>
+          <p style="color:var(--ink-soft);">
+            Hand-written HTML, CSS and JavaScript. No framework, no build step,
+            no tracking. Set in a transitional serif for anything with a voice
+            and a monospace for anything the machine says.
+          </p>
+
+          <div class="note" style="margin-top:var(--s-5);">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </div>
+
+          <dl class="deflist" style="margin-top:var(--s-6);">
+            <dt>Type</dt>
+            <dd>Iowan Old Style / system monospace</dd>
+
+            <dt>Palette</dt>
+            <dd>Bone #F4F1EC &middot; Ink #16150F &middot; Brick #C0392B</dd>
+
+            <dt>Built</dt>
+            <dd>2026 &mdash; ongoing</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER — copy of index.html -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="site-footer__grid">
+        <div>
+          <p class="wordmark">dru<span class="wordmark__dot">·</span>uly</p>
+          <p class="wordmark-caption">lorem ipsum dolor sit amet (consectetur)</p>
+        </div>
+        <nav aria-label="Footer">
+          <p class="meta" style="margin-bottom:var(--s-3);">Site</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="index.html">Index</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="writing.html">Writing</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Elsewhere">
+          <p class="meta" style="margin-bottom:var(--s-3);">Elsewhere</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Are.na</a></li>
+            <li><a href="mailto:hello@example.com">Email</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="site-footer__baseline">
+        <span>&copy; 2026 druuly</span>
+        <span>Lorem ipsum &mdash; all rights reserved</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

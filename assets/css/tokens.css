@@ -1,0 +1,94 @@
+/* ==========================================================================
+   tokens.css — every value the site is allowed to use.
+   Change a variable here and it changes everywhere. Nothing else hardcodes
+   a color, a font, or a spacing step.
+   ========================================================================== */
+
+:root {
+  /* --- color ------------------------------------------------------------ */
+  --paper:      #f4f1ec; /* page background — warm off-white / bone */
+  --paper-sunk: #eae6df; /* recessed panels, image placeholders */
+  --ink:        #16150f; /* body + headings, near-black with a green cast */
+  --ink-soft:   #4a473d; /* secondary prose */
+  --muted:      #8a8578; /* captions, dates, metadata */
+  --rule:       #dedacf; /* hairlines and borders */
+  --accent:     #c0392b; /* brick red — the interpunct, links, one word per page */
+  --accent-dim: #a5301f;
+
+  /* Overlays, kept as rgba so they work over media as well as paper. */
+  --scrim:      rgba(22, 21, 15, 0.55);
+  --tint:       rgba(22, 21, 15, 0.05);
+
+  /* --- type ------------------------------------------------------------- */
+  /* Serif is the voice of the site. Everything expressive is set in it. */
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+                Georgia, "Times New Roman", serif;
+  /* Sans handles UI chrome only: nav, buttons, labels. */
+  --font-sans:  "Helvetica Neue", Inter, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Arial, sans-serif;
+  /* Mono is the system/archive voice — timestamps, indexes, file names. */
+  --font-mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Fluid type scale. Each step grows with the viewport between 380px–1400px. */
+  --t-xs:   clamp(0.68rem, 0.66rem + 0.10vw, 0.75rem);
+  --t-sm:   clamp(0.80rem, 0.77rem + 0.15vw, 0.90rem);
+  --t-body: clamp(1.00rem, 0.96rem + 0.20vw, 1.13rem);
+  --t-lead: clamp(1.15rem, 1.05rem + 0.45vw, 1.45rem);
+  --t-h3:   clamp(1.30rem, 1.15rem + 0.70vw, 1.85rem);
+  --t-h2:   clamp(1.75rem, 1.40rem + 1.60vw, 3.00rem);
+  --t-h1:   clamp(2.60rem, 1.60rem + 4.40vw, 6.50rem);
+  --t-mega: clamp(3.40rem, 1.20rem + 10.0vw, 13.0rem); /* hero wordmark only */
+
+  /* --- spacing ---------------------------------------------------------- */
+  --s-1:  0.25rem;
+  --s-2:  0.5rem;
+  --s-3:  0.75rem;
+  --s-4:  1rem;
+  --s-5:  1.5rem;
+  --s-6:  2rem;
+  --s-7:  3rem;
+  --s-8:  4.5rem;
+  --s-9:  7rem;
+  --s-10: 10rem;
+
+  /* Vertical rhythm between page sections, shrinks on small screens. */
+  --section-gap: clamp(4.5rem, 9vw, 10rem);
+
+  /* --- layout ----------------------------------------------------------- */
+  --measure:   68ch;   /* max line length for reading */
+  --width-wide: 1400px; /* full-bleed-ish container */
+  --width-mid:  1040px; /* default content container */
+  --gutter:    clamp(1.25rem, 4vw, 3.5rem);
+  --header-h:  clamp(56px, 8vw, 76px);
+
+  /* --- motion ----------------------------------------------------------- */
+  /* Slow, weighted easing. Nothing on this site should snap. */
+  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:  180ms;
+  --dur:       420ms;
+  --dur-slow:  900ms;
+
+  /* --- misc ------------------------------------------------------------- */
+  --radius: 2px;  /* almost square — the aesthetic is print, not app */
+  --radius-pill: 999px;
+}
+
+/* --------------------------------------------------------------------------
+   Dark mode is not the default look, but a reader on a dark OS shouldn't get
+   flashbanged. Same palette, inverted, accent unchanged.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:      #131210;
+    --paper-sunk: #1c1a17;
+    --ink:        #ece8e0;
+    --ink-soft:   #b3ada1;
+    --muted:      #7d7869;
+    --rule:       #2b2823;
+    --accent:     #d9503f;
+    --accent-dim: #ea6250;
+    --scrim:      rgba(0, 0, 0, 0.6);
+    --tint:       rgba(255, 255, 255, 0.05);
+  }
+}

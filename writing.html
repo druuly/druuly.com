@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Writing — dru·uly</title>
+  <meta name="description" content="Essays, notes and logs by druuly.">
+  <meta name="theme-color" content="#f4f1ec">
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="module" src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- HEADER — copy of index.html -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="wordmark wordmark--sm" href="index.html" aria-label="druuly — home">
+        dru<span class="wordmark__dot">·</span>uly
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <a class="nav__link" href="index.html">Index</a>
+        <a class="nav__link" href="work.html">Work</a>
+        <a class="nav__link" href="writing.html">Writing</a>
+        <a class="nav__link" href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-head wrap">
+      <p class="eyebrow">Writing</p>
+      <h1 class="page-head__title">Notes &amp;<br>essays</h1>
+      <p class="lede">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nothing here is
+        finished; most of it is thinking out loud.
+      </p>
+    </section>
+
+    <!-- ==================================================================
+         FEATURED — one piece pulled out of the list.
+         Delete this whole section if you'd rather keep it a flat index.
+         ================================================================== -->
+    <section class="section wrap">
+      <p class="eyebrow"><span class="eyebrow__index">&#9656;</span> Featured</p>
+
+      <a class="card feature" href="posts/post-one.html" data-reveal data-hover-play>
+        <div class="feature__media">
+          <div class="frame frame--wide"><div class="frame__placeholder">Media &mdash; 16:9</div></div>
+        </div>
+        <div class="feature__body">
+          <p class="meta">2026.06.02 &mdash; Essay &mdash; 8 min</p>
+          <h2 class="card__title" style="font-size:var(--t-h2);">
+            Lorem ipsum dolor sit amet
+          </h2>
+          <p class="card__excerpt">
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+            accusantium doloremque laudantium, totam rem aperiam eaque ipsa.
+          </p>
+          <p><span class="arrow-link">Read <span class="arrow-link__glyph">&rarr;</span></span></p>
+        </div>
+      </a>
+    </section>
+
+    <!-- ==================================================================
+         INDEX — grouped by year. Add a new <div class="index"> per year.
+         ================================================================== -->
+    <section class="section section--ruled wrap">
+
+      <p class="eyebrow"><span class="eyebrow__index">2026</span></p>
+      <div class="index" data-reveal>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">06.02</span>
+          <span class="index__title">Lorem ipsum dolor sit amet</span>
+          <span class="index__kind">Essay</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">04.18</span>
+          <span class="index__title">Consectetur adipiscing elit</span>
+          <span class="index__kind">Note</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">02.09</span>
+          <span class="index__title">Sed do eiusmod tempor incididunt</span>
+          <span class="index__kind">Log</span>
+        </a>
+      </div>
+
+      <p class="eyebrow" style="margin-top:var(--s-8);"><span class="eyebrow__index">2025</span></p>
+      <div class="index" data-reveal>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">11.30</span>
+          <span class="index__title">Ut labore et dolore magna aliqua</span>
+          <span class="index__kind">Essay</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">09.14</span>
+          <span class="index__title">Quis nostrud exercitation ullamco</span>
+          <span class="index__kind">Note</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">05.03</span>
+          <span class="index__title">Duis aute irure dolor</span>
+          <span class="index__kind">Log</span>
+        </a>
+      </div>
+
+      <p class="eyebrow" style="margin-top:var(--s-8);"><span class="eyebrow__index">2024</span></p>
+      <div class="index" data-reveal>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">12.21</span>
+          <span class="index__title">Excepteur sint occaecat cupidatat</span>
+          <span class="index__kind">Note</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">08.07</span>
+          <span class="index__title">Sunt in culpa qui officia deserunt</span>
+          <span class="index__kind">Essay</span>
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER — copy of index.html -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="site-footer__grid">
+        <div>
+          <p class="wordmark">dru<span class="wordmark__dot">·</span>uly</p>
+          <p class="wordmark-caption">lorem ipsum dolor sit amet (consectetur)</p>
+        </div>
+        <nav aria-label="Footer">
+          <p class="meta" style="margin-bottom:var(--s-3);">Site</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="index.html">Index</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="writing.html">Writing</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Elsewhere">
+          <p class="meta" style="margin-bottom:var(--s-3);">Elsewhere</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Are.na</a></li>
+            <li><a href="mailto:hello@example.com">Email</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="site-footer__baseline">
+        <span>&copy; 2026 druuly</span>
+        <span>Lorem ipsum &mdash; all rights reserved</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

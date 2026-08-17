@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Work — dru·uly</title>
+  <meta name="description" content="Projects, experiments and things built by druuly.">
+  <meta name="theme-color" content="#f4f1ec">
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="module" src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- HEADER — copy of index.html -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="wordmark wordmark--sm" href="index.html" aria-label="druuly — home">
+        dru<span class="wordmark__dot">·</span>uly
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <a class="nav__link" href="index.html">Index</a>
+        <a class="nav__link" href="work.html">Work</a>
+        <a class="nav__link" href="writing.html">Writing</a>
+        <a class="nav__link" href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ==================================================================
+         PAGE HEAD
+         ================================================================== -->
+    <section class="page-head wrap">
+      <p class="eyebrow">Work</p>
+      <h1 class="page-head__title">Selected<br>projects</h1>
+      <p class="lede">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+    </section>
+
+    <!-- ==================================================================
+         GRID
+         Filter buttons carry data-filter; cards carry data-tags.
+         Add a tag to a card by appending it to data-tags, then add a
+         matching button below. Handled by assets/js/filter.js.
+         ================================================================== -->
+    <section class="section wrap">
+
+      <div class="filters">
+        <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter" type="button" data-filter="web" aria-pressed="false">Web</button>
+        <button class="filter" type="button" data-filter="design" aria-pressed="false">Design</button>
+        <button class="filter" type="button" data-filter="film" aria-pressed="false">Film</button>
+        <button class="filter" type="button" data-filter="writing" aria-pressed="false">Writing</button>
+      </div>
+
+      <div class="grid-auto">
+
+        <a class="card" href="projects/project-one.html" data-tags="web design" data-reveal data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Lorem ipsum</h2>
+            <p class="card__excerpt">Sed ut perspiciatis unde omnis iste natus error sit voluptatem.</p>
+            <p class="card__meta"><span>2026</span><span>Web</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-tags="design" data-reveal data-reveal-delay="80" data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Dolor sit amet</h2>
+            <p class="card__excerpt">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.</p>
+            <p class="card__meta"><span>2026</span><span>Design</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-tags="film" data-reveal data-reveal-delay="160" data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Consectetur</h2>
+            <p class="card__excerpt">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet.</p>
+            <p class="card__meta"><span>2025</span><span>Film</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-tags="web writing" data-reveal data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Adipiscing elit</h2>
+            <p class="card__excerpt">Ut enim ad minima veniam quis nostrum exercitationem ullam corporis.</p>
+            <p class="card__meta"><span>2025</span><span>Web</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-tags="design film" data-reveal data-reveal-delay="80" data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Eiusmod tempor</h2>
+            <p class="card__excerpt">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.</p>
+            <p class="card__meta"><span>2024</span><span>Design</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-tags="web" data-reveal data-reveal-delay="160" data-hover-play>
+          <div class="frame frame--wide">
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h2 class="card__title">Incididunt</h2>
+            <p class="card__excerpt">At vero eos et accusamus et iusto odio dignissimos ducimus.</p>
+            <p class="card__meta"><span>2024</span><span>Web</span></p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         ARCHIVE — older work, listed rather than shown.
+         ================================================================== -->
+    <section class="section section--ruled wrap">
+      <p class="eyebrow">Archive</p>
+
+      <div class="index" data-reveal>
+        <a class="index__row" href="projects/project-one.html">
+          <span class="index__date">2023</span>
+          <span class="index__title">Labore et dolore magna</span>
+          <span class="index__kind">Web</span>
+        </a>
+        <a class="index__row" href="projects/project-one.html">
+          <span class="index__date">2023</span>
+          <span class="index__title">Ut enim ad minim veniam</span>
+          <span class="index__kind">Design</span>
+        </a>
+        <a class="index__row" href="projects/project-one.html">
+          <span class="index__date">2022</span>
+          <span class="index__title">Quis nostrud exercitation</span>
+          <span class="index__kind">Film</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER — copy of index.html -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="site-footer__grid">
+        <div>
+          <p class="wordmark">dru<span class="wordmark__dot">·</span>uly</p>
+          <p class="wordmark-caption">lorem ipsum dolor sit amet (consectetur)</p>
+        </div>
+        <nav aria-label="Footer">
+          <p class="meta" style="margin-bottom:var(--s-3);">Site</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="index.html">Index</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="writing.html">Writing</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Elsewhere">
+          <p class="meta" style="margin-bottom:var(--s-3);">Elsewhere</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Are.na</a></li>
+            <li><a href="mailto:hello@example.com">Email</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="site-footer__baseline">
+        <span>&copy; 2026 druuly</span>
+        <span>Lorem ipsum &mdash; all rights reserved</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+/* ==========================================================================
+   components.css — reusable pieces, each one independent of where it sits.
+   Named block-first (.card, .card__title, .card--wide) so it's obvious what
+   belongs to what.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   WORDMARK — "dru·uly"
+   The interpunct is a real <span> so it can be colored and animated on its
+   own. Used at three sizes: header (sm), hero (mega), footer (default).
+   -------------------------------------------------------------------------- */
+
+.wordmark {
+  font-family: var(--font-serif);
+  font-size: var(--t-h3);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.wordmark__dot {
+  color: var(--accent);
+  /* Optical centering — the interpunct sits high in most serifs. */
+  display: inline-block;
+  padding-inline: 0.06em;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+/* The dot rolls when you hover the mark. Small, once, never loops. */
+.wordmark:hover .wordmark__dot { transform: rotate(180deg) scale(1.15); }
+
+.wordmark--sm   { font-size: var(--t-lead); }
+.wordmark--mega { font-size: var(--t-mega); letter-spacing: -0.045em; }
+
+/* The definition line under the mark, set small in the same serif. */
+.wordmark-caption {
+  font-family: var(--font-serif);
+  font-size: var(--t-sm);
+  font-style: italic;
+  color: var(--ink-soft);
+  letter-spacing: 0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   LABELS + SMALL TEXT
+   -------------------------------------------------------------------------- */
+
+/* The little mono line above a heading: "01 / SELECTED WORK" */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--s-5);
+}
+
+/* Hairline that fills the rest of the row after the label. */
+.eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.eyebrow__index { color: var(--accent); }
+
+/* Standfirst / intro paragraph. */
+.lede {
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.caption {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--t-sm);
+  color: var(--muted);
+  margin-top: var(--s-3);
+}
+
+/* One accented word inside a heading. Use sparingly — once per page. */
+.accent { color: var(--accent); }
+
+/* --------------------------------------------------------------------------
+   TAGS
+   -------------------------------------------------------------------------- */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  padding: 0;
+}
+.tags li + li { margin-top: 0; }
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: 0.25em 0.85em;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS + LINK AFFORDANCES
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.85em 1.6em;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease),
+              color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn--accent { border-color: var(--accent); color: var(--accent); }
+.btn--accent:hover { background: var(--accent); color: var(--paper); }
+
+/* Text link with an arrow that steps right on hover. */
+.arrow-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.arrow-link__glyph {
+  display: inline-block;
+  transition: transform var(--dur) var(--ease-out);
+}
+.arrow-link:hover { color: var(--accent); }
+.arrow-link:hover .arrow-link__glyph { transform: translateX(0.4em); }
+
+/* --------------------------------------------------------------------------
+   MEDIA FRAME
+   The container for every image, gif and looping video on the site.
+   Holds its aspect ratio before the file loads so nothing jumps.
+   -------------------------------------------------------------------------- */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper-sunk);
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;          /* default; override with a modifier */
+}
+
+.frame--wide     { aspect-ratio: 16 / 9; }
+.frame--square   { aspect-ratio: 1 / 1; }
+.frame--portrait { aspect-ratio: 3 / 4; }
+.frame--tall     { aspect-ratio: 9 / 16; }
+
+.frame > img,
+.frame > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Slow drift on hover — the only "motion" most cards need. */
+  transition: transform var(--dur-slow) var(--ease-out),
+              filter var(--dur-slow) var(--ease-out);
+}
+
+/* Placeholder shown while there's no real media in the frame yet.
+   Delete .frame__placeholder once you drop a file in. */
+.frame__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: var(--s-2);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 10px,
+      color-mix(in srgb, var(--muted) 8%, transparent) 10px 11px
+    );
+}
+
+/* A caption bar that slides up over the media on hover. */
+.frame__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--s-4);
+  color: var(--paper);
+  background: linear-gradient(to top, var(--scrim), transparent);
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity var(--dur) var(--ease),
+              transform var(--dur) var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   CARD — used for projects and for featured writing.
+   -------------------------------------------------------------------------- */
+
+.card { display: block; }
+
+.card:hover .frame > img,
+.card:hover .frame > video { transform: scale(1.035); }
+
+.card:hover .frame__overlay { opacity: 1; transform: translateY(0); }
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding-top: var(--s-4);
+}
+
+.card__title {
+  font-size: var(--t-h3);
+  line-height: 1.15;
+  transition: color var(--dur-fast) var(--ease);
+}
+.card:hover .card__title { color: var(--accent); }
+
+.card__excerpt {
+  color: var(--ink-soft);
+  font-size: var(--t-sm);
+  max-width: 42ch;
+}
+
+.card__meta {
+  display: flex;
+  gap: var(--s-3);
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.card__meta span + span::before {
+  content: "·";
+  margin-right: var(--s-3);
+  color: var(--rule);
+}
+
+/* --------------------------------------------------------------------------
+   INDEX ROW — the writing list. A table of contents, not a card grid.
+   -------------------------------------------------------------------------- */
+
+.index { border-top: 1px solid var(--rule); }
+
+.index__row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  align-items: baseline;
+  gap: var(--s-5);
+  padding-block: var(--s-5);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  isolation: isolate;  /* keeps the hover wash below the text, above the page */
+  transition: color var(--dur) var(--ease);
+}
+
+/* A wash of paper-sunk wipes across the row from the left on hover. */
+.index__row::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(var(--gutter) * -0.5);
+  background: var(--tint);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+  z-index: -1;
+}
+.index__row:hover::before { transform: scaleX(1); }
+
+.index__date {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.index__title {
+  font-size: var(--t-h3);
+  line-height: 1.2;
+  transition: transform var(--dur) var(--ease-out),
+              color var(--dur-fast) var(--ease);
+}
+.index__row:hover .index__title {
+  color: var(--accent);
+  transform: translateX(var(--s-3));
+}
+
+.index__kind {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .index__row { grid-template-columns: 1fr; gap: var(--s-2); }
+  .index__kind { justify-self: start; }
+}
+
+/* --------------------------------------------------------------------------
+   MARQUEE — a slow horizontal ticker. One line of text, endlessly drifting.
+   Duplicate the track's contents in the HTML so the loop has no seam.
+   -------------------------------------------------------------------------- */
+
+.marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--rule);
+  padding-block: var(--s-4);
+  user-select: none;
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: var(--s-6);
+  animation: marquee-drift 44s linear infinite;
+}
+
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+.marquee__item {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--t-h3);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.marquee__item::after {
+  content: "·";
+  margin-left: var(--s-6);
+  color: var(--accent);
+  font-style: normal;
+}
+
+@keyframes marquee-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }  /* -50% because content is doubled */
+}
+
+/* --------------------------------------------------------------------------
+   REVEAL — elements fade and lift in as they enter the viewport.
+   reveal.js adds .is-visible. If JS is off, .no-js in <html> keeps everything
+   visible, so content never depends on the script.
+   -------------------------------------------------------------------------- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--dur-slow) var(--ease),
+              transform var(--dur-slow) var(--ease-out);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.no-js [data-reveal] { opacity: 1; transform: none; }
+
+/* --------------------------------------------------------------------------
+   NOTE — a small aside box, used in articles and the colophon.
+   -------------------------------------------------------------------------- */
+
+.note {
+  border-left: 1px solid var(--accent);
+  padding: var(--s-2) 0 var(--s-2) var(--s-5);
+  color: var(--ink-soft);
+  font-size: var(--t-sm);
+}

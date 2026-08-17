@@ -1,0 +1,210 @@
+/* ==========================================================================
+   layout.css — containers, the grid, the header and the footer.
+   Structure only. Nothing decorative lives here.
+   ========================================================================== */
+
+/* --- containers ----------------------------------------------------------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--width-mid);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.wrap--wide   { max-width: var(--width-wide); }
+.wrap--narrow { max-width: 760px; }
+
+/* Section spacing. Use on every top-level <section>. */
+.section { padding-block: var(--section-gap); }
+.section--tight { padding-block: calc(var(--section-gap) * 0.5); }
+
+/* A hairline above a section, used to separate the page into chapters. */
+.section--ruled { border-top: 1px solid var(--rule); }
+
+/* --- grid ----------------------------------------------------------------- */
+/* 12 columns on desktop, collapses to a single column under 720px. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--s-6) var(--s-5);
+}
+
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+
+/* Push a block to the right without an empty div. */
+.offset-1 { grid-column-start: 2; }
+.offset-2 { grid-column-start: 3; }
+.offset-4 { grid-column-start: 5; }
+
+@media (max-width: 900px) {
+  .col-3, .col-4, .col-5 { grid-column: span 6; }
+}
+@media (max-width: 720px) {
+  .grid > * { grid-column: 1 / -1 !important; }
+}
+
+/* Simple auto-fitting card grid, used by the work index. */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: var(--s-7) var(--s-5);
+}
+
+/* --- header --------------------------------------------------------------- */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  /* Frosted so hero media reads through it as the page scrolls. */
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease);
+}
+
+/* .is-scrolled is added by nav.js once the page moves off the top. */
+.site-header.is-scrolled {
+  border-bottom-color: var(--rule);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+}
+
+.site-header__inner {
+  width: 100%;
+  max-width: var(--width-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+
+/* --- primary nav ---------------------------------------------------------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--s-4), 2.5vw, var(--s-6));
+}
+
+.nav__link {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-block: var(--s-2);
+  position: relative;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.nav__link:hover,
+.nav__link[aria-current="page"] { color: var(--ink); }
+
+/* Underline wipes in from the left on hover / current page. */
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 1px; width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+.nav__link:hover::after,
+.nav__link[aria-current="page"]::after { transform: scaleX(1); }
+
+/* --- mobile nav ----------------------------------------------------------- */
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  padding: var(--s-2) var(--s-4);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle { display: block; }
+
+  /* Full-screen panel, slid in by nav.js toggling .is-open. */
+  .nav {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--s-5);
+    background: var(--paper);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform var(--dur) var(--ease-out),
+                opacity var(--dur) var(--ease);
+  }
+  .nav.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  .nav__link {
+    font-family: var(--font-serif);
+    font-size: var(--t-h3);
+    letter-spacing: -0.02em;
+    text-transform: none;
+    color: var(--ink);
+  }
+}
+
+/* --- footer --------------------------------------------------------------- */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding-block: var(--s-8) var(--s-6);
+  margin-top: var(--section-gap);
+}
+
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: var(--s-7) var(--s-5);
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .site-footer__grid { grid-template-columns: 1fr; }
+}
+
+.site-footer__baseline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-8);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}

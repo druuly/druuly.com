@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>dru·uly</title>
+  <meta name="description" content="Personal site of druuly — projects, writing, and things worth keeping.">
+  <meta name="theme-color" content="#f4f1ec">
+
+  <!-- Open Graph: what shows up when the link is pasted anywhere.
+       Replace the image once you have a real one at assets/media/img/og.jpg -->
+  <meta property="og:title" content="dru·uly">
+  <meta property="og:description" content="Projects, writing, and things worth keeping.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/media/img/og.jpg">
+
+  <!-- Stylesheets load in dependency order: tokens first, pages last. -->
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+
+  <!-- Swaps .no-js for .js before first paint, so reveal animations only
+       apply when JS can actually undo them. -->
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+  <script type="module" src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ====================================================================
+       HEADER — identical on every page. Edit here, then copy to the others.
+       ==================================================================== -->
+  <header class="site-header">
+    <div class="site-header__inner">
+
+      <a class="wordmark wordmark--sm" href="index.html" aria-label="druuly — home">
+        dru<span class="wordmark__dot">·</span>uly
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+        Menu
+      </button>
+
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <a class="nav__link" href="index.html">Index</a>
+        <a class="nav__link" href="work.html">Work</a>
+        <a class="nav__link" href="writing.html">Writing</a>
+        <a class="nav__link" href="about.html">About</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ==================================================================
+         HERO — the wordmark, the definition line, one ambient loop behind.
+         ================================================================== -->
+    <section class="hero">
+
+      <!-- Ambient background film. Drop a muted, grainy loop in here.
+           data-autoloop = media.js plays it only while it's on screen. -->
+      <div class="hero__media" aria-hidden="true">
+        <video data-autoloop data-fade poster="assets/media/img/hero-poster.jpg">
+          <source src="assets/media/video/hero-loop.webm" type="video/webm">
+          <source src="assets/media/video/hero-loop.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="wrap wrap--wide hero__inner">
+
+        <h1 class="wordmark wordmark--mega hero__mark" data-reveal>
+          dru<span class="wordmark__dot">·</span>uly
+        </h1>
+
+        <!-- The definition line under the mark. Replace with your own. -->
+        <p class="hero__caption" data-reveal data-reveal-delay="120">
+          lorem ipsum dolor sit amet (consectetur adipiscing)
+        </p>
+
+        <div data-reveal data-reveal-delay="220">
+          <a class="arrow-link" href="work.html">
+            Selected work <span class="arrow-link__glyph">&rarr;</span>
+          </a>
+        </div>
+
+        <ul class="hero__footnotes" data-reveal data-reveal-delay="320"
+            style="list-style:none; padding-left:0;">
+          <li>Est. MMXXVI</li>
+          <li>Lorem &mdash; Ipsum</li>
+          <li>Local time <span data-clock>--:--</span></li>
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         MARQUEE — the ticker. Duplicate the items so the loop has no seam.
+         ================================================================== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <!-- set A -->
+        <span class="marquee__item">lorem ipsum</span>
+        <span class="marquee__item">dolor sit amet</span>
+        <span class="marquee__item">consectetur</span>
+        <span class="marquee__item">adipiscing elit</span>
+        <span class="marquee__item">sed do eiusmod</span>
+        <!-- set B — exact copy of set A, required for a seamless loop -->
+        <span class="marquee__item">lorem ipsum</span>
+        <span class="marquee__item">dolor sit amet</span>
+        <span class="marquee__item">consectetur</span>
+        <span class="marquee__item">adipiscing elit</span>
+        <span class="marquee__item">sed do eiusmod</span>
+      </div>
+    </div>
+
+    <!-- ==================================================================
+         00 — STATEMENT
+         ================================================================== -->
+    <section class="section wrap">
+      <div class="grid">
+        <div class="col-4">
+          <p class="eyebrow"><span class="eyebrow__index">00</span> Statement</p>
+        </div>
+
+        <div class="col-7 offset-1" data-reveal>
+          <p class="lede" style="max-width:none;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud <span class="accent">exercitation</span>
+            ullamco laboris.
+          </p>
+          <p style="margin-top:var(--s-5); color:var(--ink-soft);">
+            Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+            cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         01 — SELECTED WORK
+         One feature, then a two-up grid. Full list lives on work.html.
+         ================================================================== -->
+    <section class="section section--ruled wrap">
+      <p class="eyebrow"><span class="eyebrow__index">01</span> Selected work</p>
+
+      <!-- Feature: the one project you most want seen first. -->
+      <a class="card feature" href="projects/project-one.html" data-reveal data-hover-play>
+        <div class="feature__media">
+          <div class="frame frame--wide">
+            <!-- Replace the placeholder div with an <img> or <video>. -->
+            <div class="frame__placeholder">Media &mdash; 16:9</div>
+          </div>
+        </div>
+
+        <div class="feature__body">
+          <p class="meta">Lorem &mdash; 2026</p>
+          <h2 class="card__title" style="font-size:var(--t-h2);">
+            Lorem ipsum dolor sit
+          </h2>
+          <p class="card__excerpt">
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+            accusantium doloremque laudantium, totam rem aperiam.
+          </p>
+          <ul class="tags">
+            <li class="tag">Lorem</li>
+            <li class="tag">Ipsum</li>
+            <li class="tag">Dolor</li>
+          </ul>
+        </div>
+      </a>
+
+      <!-- Two-up. Add more by copying an <a class="card">. -->
+      <div class="grid-auto" style="margin-top:var(--s-8);">
+
+        <a class="card" href="projects/project-one.html" data-reveal data-hover-play>
+          <div class="frame frame--square">
+            <div class="frame__placeholder">Media &mdash; 1:1</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Consectetur adipiscing</h3>
+            <p class="card__excerpt">Nemo enim ipsam voluptatem quia voluptas sit aspernatur.</p>
+            <p class="card__meta"><span>2026</span><span>Lorem</span></p>
+          </div>
+        </a>
+
+        <a class="card" href="projects/project-one.html" data-reveal data-reveal-delay="120" data-hover-play>
+          <div class="frame frame--square">
+            <div class="frame__placeholder">Media &mdash; 1:1</div>
+            <div class="frame__overlay"><p class="meta" style="color:inherit;">View project</p></div>
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">Eiusmod tempor</h3>
+            <p class="card__excerpt">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet.</p>
+            <p class="card__meta"><span>2025</span><span>Ipsum</span></p>
+          </div>
+        </a>
+
+      </div>
+
+      <p style="margin-top:var(--s-7);">
+        <a class="arrow-link" href="work.html">
+          All work <span class="arrow-link__glyph">&rarr;</span>
+        </a>
+      </p>
+    </section>
+
+    <!-- ==================================================================
+         02 — STRIP
+         A scrolling roll of loops. Good place for gifs, process clips,
+         camera roll. Bleeds past the container on both sides.
+         ================================================================== -->
+    <section class="section section--ruled">
+      <div class="wrap">
+        <p class="eyebrow"><span class="eyebrow__index">02</span> Roll</p>
+      </div>
+
+      <div class="wrap">
+        <div class="strip" data-reveal>
+          <!-- Each item: swap .frame__placeholder for a <video data-autoloop>
+               or an <img>. Keep the aspect modifier consistent per row. -->
+          <div class="strip__item">
+            <div class="frame frame--portrait"><div class="frame__placeholder">Loop 01</div></div>
+            <p class="caption">Lorem ipsum dolor</p>
+          </div>
+          <div class="strip__item">
+            <div class="frame frame--portrait"><div class="frame__placeholder">Loop 02</div></div>
+            <p class="caption">Sit amet consectetur</p>
+          </div>
+          <div class="strip__item">
+            <div class="frame frame--portrait"><div class="frame__placeholder">Loop 03</div></div>
+            <p class="caption">Adipiscing elit sed</p>
+          </div>
+          <div class="strip__item">
+            <div class="frame frame--portrait"><div class="frame__placeholder">Loop 04</div></div>
+            <p class="caption">Do eiusmod tempor</p>
+          </div>
+          <div class="strip__item">
+            <div class="frame frame--portrait"><div class="frame__placeholder">Loop 05</div></div>
+            <p class="caption">Incididunt ut labore</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         03 — RECENT WRITING
+         ================================================================== -->
+    <section class="section section--ruled wrap">
+      <p class="eyebrow"><span class="eyebrow__index">03</span> Recent writing</p>
+
+      <div class="index" data-reveal>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">2026.06.02</span>
+          <span class="index__title">Lorem ipsum dolor sit amet</span>
+          <span class="index__kind">Essay</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">2026.04.18</span>
+          <span class="index__title">Consectetur adipiscing elit sed</span>
+          <span class="index__kind">Note</span>
+        </a>
+        <a class="index__row" href="posts/post-one.html">
+          <span class="index__date">2026.02.09</span>
+          <span class="index__title">Eiusmod tempor incididunt</span>
+          <span class="index__kind">Log</span>
+        </a>
+      </div>
+
+      <p style="margin-top:var(--s-6);">
+        <a class="arrow-link" href="writing.html">
+          Everything <span class="arrow-link__glyph">&rarr;</span>
+        </a>
+      </p>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       FOOTER — identical on every page.
+       ==================================================================== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="site-footer__grid">
+
+        <div>
+          <p class="wordmark">dru<span class="wordmark__dot">·</span>uly</p>
+          <p class="wordmark-caption">lorem ipsum dolor sit amet (consectetur)</p>
+        </div>
+
+        <nav aria-label="Footer">
+          <p class="meta" style="margin-bottom:var(--s-3);">Site</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="index.html">Index</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="writing.html">Writing</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Elsewhere">
+          <p class="meta" style="margin-bottom:var(--s-3);">Elsewhere</p>
+          <ul style="list-style:none; padding:0;">
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Are.na</a></li>
+            <li><a href="mailto:hello@example.com">Email</a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <div class="site-footer__baseline">
+        <span>&copy; 2026 druuly</span>
+        <span>Lorem ipsum &mdash; all rights reserved</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
