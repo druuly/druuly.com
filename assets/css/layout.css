@@ -104,8 +104,8 @@
 .nav__link {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
   color: var(--muted);
   padding-block: var(--s-2);
   position: relative;
@@ -139,8 +139,8 @@
   padding: var(--s-2) var(--s-4);
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--ink);
   cursor: pointer;
 }

@@ -4,71 +4,148 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   HERO (home)
-   A near-full-height opening: the wordmark, the definition line, and one
-   piece of ambient media behind it.
+   HOME PANELS
+   The home page is exactly two screens: an intro and a works carousel.
+   Both are height-capped so the whole site is one or two scroll gestures —
+   nothing here is allowed to grow the page.
    -------------------------------------------------------------------------- */
 
-.hero {
-  position: relative;
+.panel {
   min-height: calc(100svh - var(--header-h));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-block: var(--s-9) var(--s-7);
-  overflow: hidden;
+  position: relative;
 }
 
-/* Optional background film. Sits behind everything, heavily faded so the
-   serif stays readable. Swap the <video> source and delete the placeholder. */
-.hero__media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.14;
-  filter: grayscale(100%) contrast(115%);
-  pointer-events: none;
-}
-.hero__media video,
-.hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* --- panel 1: intro ------------------------------------------------------- */
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-8);
+  padding-block: var(--s-7);
 }
 
-/* Paper fades in at the bottom so the hero dissolves into the next section. */
-.hero__media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, var(--paper) 100%);
+.intro__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
 }
 
-.hero__inner { position: relative; z-index: 1; }
+/* The mega wordmark can't use --t-mega here — at two columns it would break
+   the line. Capped so it always sits on one. */
+.intro .wordmark--mega {
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  margin-bottom: var(--s-1);
+}
 
-.hero__mark { margin-bottom: var(--s-4); }
-
-.hero__caption {
+.intro__caption {
   font-size: var(--t-lead);
   font-style: italic;
   color: var(--ink-soft);
   max-width: 34ch;
-  margin-bottom: var(--s-7);
 }
 
-/* The row of small facts pinned to the bottom of the hero. */
-.hero__footnotes {
+.intro__bio {
+  color: var(--ink);
+  max-width: 48ch;
+}
+
+.intro__links {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-3) var(--s-6);
-  padding-top: var(--s-5);
-  border-top: 1px solid var(--rule);
-  font-family: var(--font-mono);
+  gap: var(--s-2) var(--s-5);
+  list-style: none;
+  padding: 0;
+  margin-top: var(--s-2);
+  font-size: var(--t-sm);
+  letter-spacing: 0.03em;
+}
+.intro__links li + li { margin-top: 0; }
+
+.intro__links a {
+  color: var(--label);
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.intro__links a:hover { color: var(--orange); border-bottom-color: currentColor; }
+
+.intro__portrait { justify-self: end; width: 100%; max-width: 340px; }
+
+@media (max-width: 860px) {
+  .intro {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+    padding-block: var(--s-8) var(--s-7);
+  }
+  /* Portrait first on narrow screens — the face before the name. */
+  .intro__portrait { order: -1; justify-self: start; max-width: 220px; }
+}
+
+/* The single scroll hint, pinned to the bottom of panel 1. nav.js fades it
+   out as soon as the page moves. */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: var(--s-6);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: opacity var(--dur) var(--ease), color var(--dur-fast) var(--ease);
+}
+.scroll-cue:hover { color: var(--orange); }
+.scroll-cue__glyph { animation: cue-bob 2.4s var(--ease) infinite; }
+
+/* Once the reader has scrolled, the hint has done its job. */
+.is-scrolled-page .scroll-cue { opacity: 0; pointer-events: none; }
+
+@keyframes cue-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+
+@media (max-width: 640px) {
+  .scroll-cue { display: none; }
+}
+
+/* --- panel 2: works ------------------------------------------------------- */
+
+.panel--works { border-top: 1px solid var(--rule); }
+
+.works__head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  margin-bottom: var(--s-5);
+}
+/* The eyebrow's own hairline already fills the row, so it flexes and the
+   buttons sit at the end of it. */
+.works__head .eyebrow { flex: 1; margin-bottom: 0; }
+
+/* The slim closing line. Replaces the old three-column footer — a two-screen
+   site doesn't need a sitemap at the bottom. */
+.baseline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-7);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
   color: var(--muted);
 }
+.baseline a { color: var(--label); }
+.baseline a:hover { color: var(--orange); }
 
 /* --------------------------------------------------------------------------
    PAGE HEADER (work / writing / about)
@@ -155,8 +232,8 @@
   border-top: 1px solid var(--rule);
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--muted);
 }
 
@@ -229,8 +306,8 @@
 .deflist dt {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--muted);
 }
 
@@ -255,8 +332,8 @@
 .filter {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--muted);
   background: none;
   border: 1px solid var(--rule);

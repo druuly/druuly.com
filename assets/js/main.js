@@ -10,6 +10,7 @@ import { initNav, markCurrentPage } from './nav.js';
 import { initReveal } from './reveal.js';
 import { initAutoLoops, initHoverPlay, initMediaFade } from './media.js';
 import { initFilters } from './filter.js';
+import { initCarousels } from './carousel.js';
 
 function boot() {
   markCurrentPage();
@@ -19,6 +20,7 @@ function boot() {
   initHoverPlay();
   initMediaFade();
   initFilters();
+  initCarousels();
 }
 
 // Modules are deferred by default, but guard anyway in case that changes.

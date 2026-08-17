@@ -2,32 +2,67 @@
    tokens.css — every value the site is allowed to use.
    Change a variable here and it changes everywhere. Nothing else hardcodes
    a color, a font, or a spacing step.
+
+   Palette is keyed to the Blond album art: a bleached off-white ground with
+   soft pastels doing all the coloring. Nothing saturated, nothing loud.
    ========================================================================== */
 
 :root {
   /* --- color ------------------------------------------------------------ */
-  --paper:      #f4f1ec; /* page background — warm off-white / bone */
-  --paper-sunk: #eae6df; /* recessed panels, image placeholders */
-  --ink:        #16150f; /* body + headings, near-black with a green cast */
-  --ink-soft:   #4a473d; /* secondary prose */
-  --muted:      #8a8578; /* captions, dates, metadata */
-  --rule:       #dedacf; /* hairlines and borders */
-  --accent:     #c0392b; /* brick red — the interpunct, links, one word per page */
-  --accent-dim: #a5301f;
+  /* One off-white ground. Everything written on it is a pastel — no black
+     anywhere on the site. */
+  --paper:      #f5f2ec; /* page background — bleached off-white */
+  --paper-sunk: #ede9e1; /* recessed panels, image placeholders */
+  --rule:       #e0dbd1; /* hairlines and borders */
+
+  /* --- the pastels -------------------------------------------------------
+     Two depths of the same six hues.
+     *-pale  → fills, rules, washes. Never set type in these.
+     (unsuffixed) → the type colors. Dusty rather than candy, because a pale
+     pastel on a pale ground is unreadable; these still land ~4.5:1 on paper. */
+  --blue:   #55809f;   --blue-pale:   #a9c4d8;
+  --pink:   #ab6a79;   --pink-pale:   #e8b4bd;
+  --mint:   #5a8b71;   --mint-pale:   #a9ccb8;
+  --lilac:  #786a9c;   --lilac-pale:  #bdb2d4;
+  --butter: #8f7538;   --butter-pale: #e6cf9a;
+  --peach:  #ac6f4f;   --peach-pale:  #e9bda0;
+
+  /* Orange lives outside the pastel set — it's the one hot color, reserved
+     for the interpunct in the wordmark. */
+  --orange: #e2793c;
+
+  /* --- type roles --------------------------------------------------------
+     Each kind of text gets its own pastel, so the page reads as several
+     voices rather than one. Change the role, not the component. */
+  --ink:      var(--blue);    /* body prose — the default voice */
+  --ink-soft: #6f8496;        /* secondary prose, a step back from --ink */
+  --muted:    #a08d92;        /* captions, dates, metadata — dusty rose */
+  --heading:  var(--lilac);   /* h1–h4 */
+  --label:    var(--mint);    /* eyebrows, tags, nav, buttons */
+
+  /* Accent is the site's one recurring pointer color. */
+  --accent:     var(--peach);
+  --accent-dim: #955c3f;
 
   /* Overlays, kept as rgba so they work over media as well as paper. */
-  --scrim:      rgba(22, 21, 15, 0.55);
-  --tint:       rgba(22, 21, 15, 0.05);
+  --scrim:      rgba(46, 43, 40, 0.5);
+  --tint:       rgba(46, 43, 40, 0.04);
 
   /* --- type ------------------------------------------------------------- */
-  /* Serif is the voice of the site. Everything expressive is set in it. */
-  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
-                Georgia, "Times New Roman", serif;
-  /* Sans handles UI chrome only: nav, buttons, labels. */
-  --font-sans:  "Helvetica Neue", Inter, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", Arial, sans-serif;
-  /* Mono is the system/archive voice — timestamps, indexes, file names. */
-  --font-mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  /* ONE typeface for the whole site. The hero is the only exception, and it
+     opts in explicitly via --font-display. */
+  --font: "Helvetica Neue", Inter, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Arial, sans-serif;
+
+  /* Hero wordmark only. Nothing else may use this. */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino,
+                  "Book Antiqua", Georgia, serif;
+
+  /* Legacy aliases — old rules point here until they're migrated. All three
+     resolve to the same face so the site reads as one voice. */
+  --font-serif: var(--font);
+  --font-sans:  var(--font);
+  --font-mono:  var(--font);
 
   /* Fluid type scale. Each step grows with the viewport between 380px–1400px. */
   --t-xs:   clamp(0.68rem, 0.66rem + 0.10vw, 0.75rem);
@@ -72,23 +107,13 @@
   /* --- misc ------------------------------------------------------------- */
   --radius: 2px;  /* almost square — the aesthetic is print, not app */
   --radius-pill: 999px;
+
+  /* Opt out of OS dark-mode theming for built-in UI. */
+  color-scheme: light;
 }
 
 /* --------------------------------------------------------------------------
-   Dark mode is not the default look, but a reader on a dark OS shouldn't get
-   flashbanged. Same palette, inverted, accent unchanged.
+   No dark mode. The off-white ground IS the design — a dark inversion of it
+   is a different site. `color-scheme: light` (set in :root above) also keeps
+   the browser from auto-darkening form controls and scrollbars.
    -------------------------------------------------------------------------- */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper:      #131210;
-    --paper-sunk: #1c1a17;
-    --ink:        #ece8e0;
-    --ink-soft:   #b3ada1;
-    --muted:      #7d7869;
-    --rule:       #2b2823;
-    --accent:     #d9503f;
-    --accent-dim: #ea6250;
-    --scrim:      rgba(0, 0, 0, 0.6);
-    --tint:       rgba(255, 255, 255, 0.05);
-  }
-}

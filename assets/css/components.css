@@ -10,8 +10,10 @@
    own. Used at three sizes: header (sm), hero (mega), footer (default).
    -------------------------------------------------------------------------- */
 
+/* The wordmark is the one place the display serif is allowed. Everything
+   else on the site is set in --font. */
 .wordmark {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: var(--t-h3);
   line-height: 0.9;
   letter-spacing: -0.03em;
@@ -21,7 +23,7 @@
 }
 
 .wordmark__dot {
-  color: var(--accent);
+  color: var(--orange);
   /* Optical centering — the interpunct sits high in most serifs. */
   display: inline-block;
   padding-inline: 0.06em;
@@ -54,8 +56,8 @@
   gap: var(--s-3);
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
   color: var(--muted);
   margin-bottom: var(--s-5);
 }
@@ -81,8 +83,8 @@
 .meta {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--muted);
 }
 
@@ -113,9 +115,9 @@
 .tag {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  color: var(--label);
   border: 1px solid var(--rule);
   border-radius: var(--radius-pill);
   padding: 0.25em 0.85em;
@@ -132,20 +134,20 @@
   gap: var(--s-3);
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
   padding: 0.85em 1.6em;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--label);
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--ink);
+  color: var(--label);
   cursor: pointer;
   transition: background var(--dur) var(--ease),
               color var(--dur) var(--ease),
               border-color var(--dur) var(--ease);
 }
 .btn:hover {
-  background: var(--ink);
+  background: var(--label);
   color: var(--paper);
 }
 
@@ -159,15 +161,15 @@
   gap: var(--s-2);
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: var(--accent);
 }
 .arrow-link__glyph {
   display: inline-block;
   transition: transform var(--dur) var(--ease-out);
 }
-.arrow-link:hover { color: var(--accent); }
+.arrow-link:hover { color: var(--orange); }
 .arrow-link:hover .arrow-link__glyph { transform: translateX(0.4em); }
 
 /* --------------------------------------------------------------------------
@@ -210,8 +212,8 @@
   text-align: center;
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
   color: var(--muted);
   background:
     repeating-linear-gradient(
@@ -271,8 +273,8 @@
   align-items: center;
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   color: var(--muted);
 }
 .card__meta span + span::before {
@@ -315,7 +317,7 @@
 .index__date {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -334,9 +336,9 @@
 .index__kind {
   font-family: var(--font-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--lilac);
 }
 
 @media (max-width: 640px) {
@@ -369,7 +371,7 @@
   font-family: var(--font-serif);
   font-style: italic;
   font-size: var(--t-h3);
-  color: var(--muted);
+  color: var(--lilac-pale);
   white-space: nowrap;
 }
 .marquee__item::after {
@@ -414,3 +416,88 @@
   color: var(--ink-soft);
   font-size: var(--t-sm);
 }
+
+/* --------------------------------------------------------------------------
+   CAROUSEL — the selected-works rail on the home page.
+   Scroll-snap does the actual work; the buttons just scroll it one card at
+   a time. It stays usable with JS off and with a trackpad swipe.
+   -------------------------------------------------------------------------- */
+
+.carousel {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  /* Bleed past the container so cards run off both edges of the screen. */
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;  /* no accidental back-swipe navigation */
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.carousel__track {
+  display: flex;
+  gap: var(--s-5);
+  width: max-content;
+  padding-bottom: var(--s-2);
+}
+
+.carousel__controls { display: flex; gap: var(--s-2); }
+
+.carousel__btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--label);
+  font-size: var(--t-sm);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              opacity var(--dur-fast) var(--ease);
+}
+.carousel__btn:hover { color: var(--orange); border-color: var(--orange); }
+
+/* Set by carousel.js when the rail is already at that end. */
+.carousel__btn[disabled] { opacity: 0.3; cursor: default; }
+.carousel__btn[disabled]:hover { color: var(--label); border-color: var(--rule); }
+
+/* JS off: the buttons can't do anything, so don't offer them. */
+.no-js .carousel__controls { display: none; }
+
+/* --- a card on the rail --------------------------------------------------- */
+
+.work-card {
+  flex: 0 0 clamp(260px, 34vw, 420px);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.work-card .frame > img,
+.work-card .frame > video { transition: transform var(--dur-slow) var(--ease-out); }
+.work-card:hover .frame > img,
+.work-card:hover .frame > video { transform: scale(1.035); }
+
+.work-card__title {
+  font-size: var(--t-h3);
+  line-height: 1.15;
+  transition: color var(--dur-fast) var(--ease);
+}
+.work-card:hover .work-card__title { color: var(--accent); }
+
+.work-card__meta {
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* Each kind of work gets its own pastel, so the rail reads as a mix at a
+   glance rather than a uniform list. */
+.work-card__kind { color: var(--mint); }
+.work-card:nth-child(3n + 2) .work-card__kind { color: var(--pink); }
+.work-card:nth-child(3n) .work-card__kind     { color: var(--butter); }

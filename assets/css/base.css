@@ -21,9 +21,12 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-serif);
+  font-family: var(--font);
   font-size: var(--t-body);
   line-height: 1.65;
+  /* The whole site speaks in lowercase. This is a display transform only —
+     the underlying markup keeps its real casing for screen readers and SEO. */
+  text-transform: lowercase;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -45,8 +48,9 @@ canvas {
 /* --- typography ----------------------------------------------------------- */
 
 h1, h2, h3, h4 {
-  font-family: var(--font-serif);
-  font-weight: 400;         /* the serif carries weight on its own */
+  font-family: var(--font);
+  font-weight: 400;
+  color: var(--heading);
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;        /* avoids one-word orphan lines in headings */

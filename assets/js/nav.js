@@ -11,7 +11,10 @@ export function initNav() {
   /* --- header border on scroll ------------------------------------------ */
   if (header) {
     const setScrolled = () => {
-      header.classList.toggle('is-scrolled', window.scrollY > 12);
+      const scrolled = window.scrollY > 12;
+      header.classList.toggle('is-scrolled', scrolled);
+      // Same signal, on <body>, so the home page's scroll cue can fade out.
+      document.body.classList.toggle('is-scrolled-page', scrolled);
     };
     setScrolled(); // run once in case the page loads part-scrolled
     // passive: this listener never calls preventDefault, so let the browser
