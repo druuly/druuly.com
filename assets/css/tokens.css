@@ -35,6 +35,15 @@
      for the interpunct in the wordmark. */
   --orange: #e2793c;
 
+  /* *-bright → a step past *-vivid: fully saturated, used only where a
+     link needs to punch through a translucent tinted glass card rather
+     than sit on flat paper. */
+  --blue-bright:   #2ba3ff;
+  --pink-bright:   #ff3d73;
+  --lilac-bright:  #9c4dff;
+  --butter-bright: #ffb300;
+  --teal-bright:   #00d1b2;
+
   /* --- type roles --------------------------------------------------------
      Each kind of text gets its own pastel, so the page reads as several
      voices rather than one. Change the role, not the component. */

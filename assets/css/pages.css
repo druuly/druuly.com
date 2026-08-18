@@ -70,6 +70,12 @@
   max-width: 48ch;
 }
 
+.intro__bio-link {
+  color: var(--blue-bright);
+  border-bottom-color: color-mix(in srgb, var(--blue-bright) 35%, transparent);
+}
+.intro__bio-link:hover { border-bottom-color: var(--blue-bright); }
+
 .intro__links {
   display: flex;
   flex-wrap: wrap;
@@ -89,14 +95,15 @@
               border-color var(--dur-fast) var(--ease);
 }
 
-/* Each link gets its own vivid pastel, so the row reads as a clear mix. */
-.intro__links li:nth-child(1) a { color: var(--peach-vivid); }
-.intro__links li:nth-child(2) a { color: var(--lilac-vivid); }
-.intro__links li:nth-child(3) a { color: var(--pink-vivid); }
-.intro__links li:nth-child(4) a { color: var(--butter-vivid); }
-.intro__links li:nth-child(5) a { color: var(--teal-vivid); }
+/* Each link gets its own bright, fully-saturated hue so the row pops
+   against the tinted glass card. */
+.intro__links li:nth-child(1) a { color: var(--orange); }
+.intro__links li:nth-child(2) a { color: var(--lilac-bright); }
+.intro__links li:nth-child(3) a { color: var(--pink-bright); }
+.intro__links li:nth-child(4) a { color: var(--butter-bright); }
+.intro__links li:nth-child(5) a { color: var(--teal-bright); }
 
-.intro__links a:hover { color: var(--orange); border-bottom-color: currentColor; }
+.intro__links a:hover { color: var(--blue-bright); border-bottom-color: currentColor; }
 
 .intro__portrait { justify-self: end; width: 100%; max-width: 340px; }
 
