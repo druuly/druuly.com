@@ -77,11 +77,19 @@
 
           <!-- Same pane as the bio. No data-reveal on any of them: the fade
                holds the card below opacity 1, and a translucent ancestor stops
-               the backdrop being sampled — the glass would arrive late. -->
+               the backdrop being sampled — the glass would arrive late.
+
+               data-tint is the smoke: liquid-glass.js lays a second sheet the
+               same size and radius directly under the pane, so the blur picks
+               it up. Raise it toward 1 for near-black, drop it to 0 for none;
+               data-tint-color takes "r g b" if it shouldn't be black. Don't
+               reach for a background-color on .glass-card instead — that kills
+               the backdrop sampling and is what breaks the effect. -->
           <div class="glass-card"
                data-liquid-glass
                data-displacement-scale="90"
                data-blur-amount="0.1"
+               data-tint="0.28"
                data-corner-radius="50"
                data-elasticity="0.05"
                data-glass-container=".panel--intro">
@@ -100,6 +108,7 @@
                data-liquid-glass
                data-displacement-scale="90"
                data-blur-amount="0.1"
+               data-tint="0.28"
                data-corner-radius="60"
                data-elasticity="0.05"
                data-glass-container=".panel--intro">
@@ -113,6 +122,7 @@
                data-liquid-glass
                data-displacement-scale="90"
                data-blur-amount="0.1"
+               data-tint="0.28"
                data-corner-radius="70"
                data-elasticity="0.05"
                data-glass-container=".panel--intro">
@@ -134,9 +144,22 @@
 
       </div>
 
+      <!-- The cue rides the same glass + tint as the intro cards. The pane
+           lives inside the anchor rather than on it: nav.js fades the anchor,
+           and the spring in liquid-glass.js writes left/top, which would fight
+           the cue's own positioning if they were the same element. -->
       <a class="scroll-cue" href="#works" aria-label="Selected works">
-        <span>selected works</span>
-        <span class="scroll-cue__glyph" aria-hidden="true">&darr;</span>
+        <div class="glass-card glass-card--cue"
+             data-liquid-glass
+             data-displacement-scale="90"
+             data-blur-amount="0.1"
+             data-tint="0.28"
+             data-corner-radius="999"
+             data-elasticity="0.05"
+             data-glass-container=".panel--intro">
+          <span>selected works</span>
+          <span class="scroll-cue__glyph" aria-hidden="true">&darr;</span>
+        </div>
       </a>
     </section>
 

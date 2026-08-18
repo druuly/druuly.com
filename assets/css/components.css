@@ -560,6 +560,16 @@
   inset: 0;
 }
 
+/* The tint sheet — same box, same radius, painted one layer down. Never move a
+   colour from here onto .lg or .lg__shape: a translucent ancestor of .lg__warp
+   stops the backdrop being sampled and the glass goes flat. Colour and strength
+   come from JS (data-tint / data-tint-color). */
+.lg__tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .lg__content {
   position: relative;
   z-index: 1;

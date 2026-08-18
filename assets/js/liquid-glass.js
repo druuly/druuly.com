@@ -18,6 +18,8 @@
      data-aberration          width of the colour fringe        (2)
      data-elasticity          how much it leans toward the cursor (0.15)
      data-corner-radius       px; matches the CSS radius        (999)
+     data-tint                opacity of the sheet under the pane (0.28)
+     data-tint-color          its colour, as "r g b"            (0 0 0)
      data-mode                standard | polar | prominent | shader
      data-glass-container     selector for the mouse area; defaults to the
                               closest section, so the card reacts to the
@@ -41,6 +43,8 @@ const DEFAULTS = {
   aberration: 2,
   elasticity: 0.15,
   cornerRadius: 999,
+  tint: 0.28,
+  tintColor: '0 0 0',
   mode: 'standard',
 };
 
@@ -96,6 +100,18 @@ export function createLiquidGlass(host) {
   shape.style.borderRadius = `${opts.cornerRadius}px`;
   shape.append(warp, content);
 
+  /* The tint: a second sheet the exact size of the pane, sitting directly under
+     it like the lower of two stacked papers. It has to be a sibling *painted
+     before* the warp rather than a background on the card — a translucent
+     ancestor of a backdrop layer stops Chrome sampling the page at all, which
+     is what breaks the glass whenever a background-color is added here. Painted
+     underneath, it lands inside the warp's backdrop instead, so the blur picks
+     it up and the whole pane reads as smoked glass. */
+  const tint = document.createElement('span');
+  tint.className = 'lg__tint';
+  tint.style.borderRadius = `${opts.cornerRadius}px`;
+  tint.style.background = `rgba(${opts.tintColor.replace(/[\s,]+/g, ', ')}, ${opts.tint})`;
+
   const borders = ['lg__border--screen', 'lg__border--overlay'].map((mod) => {
     const span = document.createElement('span');
     span.className = `lg__border ${mod}`;
@@ -104,7 +120,10 @@ export function createLiquidGlass(host) {
   });
 
   host.classList.add('lg');
-  host.append(filter.svg, shape, ...borders);
+  host.append(filter.svg, tint, shape, ...borders);
+
+  // Everything that has to keep the pane's silhouette as the corners swell.
+  const rounded = [shape, tint, ...borders];
 
   // The lean is measured from where the card *sits*, not where it currently
   // leans — reading the live box would feed the transform back into its own
@@ -214,8 +233,7 @@ export function createLiquidGlass(host) {
     const corner = (cx, cy) =>
       Math.max(2, r * (1 + pull * (cx * target.ux + cy * target.uy) * 0.5)).toFixed(1);
     const radius = `${corner(-1, -1)}px ${corner(1, -1)}px ${corner(1, 1)}px ${corner(-1, 1)}px`;
-    shape.style.borderRadius = radius;
-    for (const border of borders) border.style.borderRadius = radius;
+    for (const layer of rounded) layer.style.borderRadius = radius;
 
     // Keep stepping until everything has actually come to rest.
     const moving = Math.abs(spring.vx) + Math.abs(spring.vy) + Math.abs(spring.vlean) > 0.01
@@ -246,6 +264,8 @@ function readOptions(host) {
     aberration: num(d.aberration, DEFAULTS.aberration),
     elasticity: num(d.elasticity, DEFAULTS.elasticity),
     cornerRadius: num(d.cornerRadius, DEFAULTS.cornerRadius),
+    tint: num(d.tint, DEFAULTS.tint),
+    tintColor: d.tintColor || DEFAULTS.tintColor,
     mode: d.mode || DEFAULTS.mode,
     container: d.glassContainer
       ? document.querySelector(d.glassContainer)

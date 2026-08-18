@@ -112,20 +112,36 @@
 
 /* The single scroll hint, pinned to the bottom of panel 1. nav.js fades it
    out as soon as the page moves. */
+/* Centred by the flex row, not by translateX: a transform on an ancestor of
+   the glass makes Chrome sample the backdrop from the wrong space, and the
+   pane inside blanks out. */
 .scroll-cue {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: var(--s-6);
-  transform: translateX(-50%);
+  width: fit-content;
+  margin-inline: auto;   /* centres the box itself, so the link stays the size
+                            of the pill instead of a full-width hit area */
   display: flex;
-  align-items: center;
-  gap: var(--s-2);
   font-size: var(--t-xs);
   letter-spacing: 0.06em;
   color: var(--muted);
-  transition: opacity var(--dur) var(--ease), color var(--dur-fast) var(--ease);
+  transition: opacity var(--dur) var(--ease);
 }
-.scroll-cue:hover { color: var(--orange); }
+
+/* The pill: tighter than the intro cards, and the row of label + arrow moves
+   onto the sharp content layer. */
+.glass-card--cue .lg__shape { padding: var(--s-2) var(--s-4); }
+.glass-card--cue .lg__content {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+/* Colour only — left/top and border-radius belong to the spring. */
+.glass-card--cue { transition: color var(--dur-fast) var(--ease); }
+.scroll-cue:hover .glass-card--cue { color: var(--orange); }
+
 .scroll-cue__glyph { animation: cue-bob 2.4s var(--ease) infinite; }
 
 /* Once the reader has scrolled, the hint has done its job. */
