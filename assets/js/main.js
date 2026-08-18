@@ -14,6 +14,7 @@ import { initCarousels } from './carousel.js';
 import { initWordmarkColor } from './wordmark-color.js';
 import { initIntro } from './intro.js';
 import { initBeach } from './beach.js';
+import { initLiquidGlass } from './liquid-glass.js';
 
 function boot() {
   markCurrentPage();
@@ -27,6 +28,7 @@ function boot() {
   initWordmarkColor();
   initIntro();
   initBeach();
+  initLiquidGlass();
 }
 
 // Modules are deferred by default, but guard anyway in case that changes.

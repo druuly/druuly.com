@@ -67,19 +67,14 @@
   height: var(--header-h);
   display: flex;
   align-items: center;
-  /* Frosted so hero media reads through it as the page scrolls. */
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
-  backdrop-filter: saturate(140%) blur(14px);
-  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  /* Solid, all the way down the page — nothing reads through it. */
+  background: var(--paper);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--dur) var(--ease),
-              background var(--dur) var(--ease);
 }
 
 /* .is-scrolled is added by nav.js once the page moves off the top. */
 .site-header.is-scrolled {
   border-bottom-color: var(--rule);
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
 }
 
 .site-header__inner {

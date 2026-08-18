@@ -520,3 +520,91 @@
 .work-card__kind { color: var(--mint); }
 .work-card:nth-child(3n + 2) .work-card__kind { color: var(--pink); }
 .work-card:nth-child(3n) .work-card__kind     { color: var(--butter); }
+
+
+/* --- liquid glass --------------------------------------------------------- */
+/* The chrome for [data-liquid-glass]; liquid-glass.js builds the layers and
+   drives the transform. Sizing, radius and type stay here so a card can be
+   restyled without touching the effect. */
+
+.lg {
+  position: relative;
+  display: inline-block;
+  left: 0;
+  top: 0;
+  /* No transition on left/top or border-radius: the spring in liquid-glass.js
+     writes those every frame, and a transition on top of it would smear the
+     motion into mush. */
+}
+
+.lg__filter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.lg__shape {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: var(--s-4) var(--s-5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* The layer that actually bends: it samples the page behind the card, so it
+   must stay empty and sit under the text. */
+.lg__warp {
+  position: absolute;
+  inset: 0;
+}
+
+.lg__content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Two masked rings make the bevel — one screened, one overlaid. The gradient
+   itself is set from JS so it can swing with the cursor. */
+.lg__border {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.5) inset,
+              0 1px 3px rgba(255, 255, 255, 0.25) inset,
+              0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.lg__border--screen  { mix-blend-mode: screen; opacity: 0.2; }
+.lg__border--overlay { mix-blend-mode: overlay; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lg { transition: none; }
+}
+
+/* A block of prose on a pane of glass. The text sits on the sharp layer, so
+   only the tide behind it bends. */
+.glass-card {
+  color: var(--paper);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Height comes from the text, so the padding is the only knob: raise these two
+   values to make the cards roomier, lower them to tighten. The margins of the
+   first and last child are dropped so the pane hugs the type. */
+.glass-card .lg__shape { padding: var(--s-3) var(--s-5); }
+
+/* The bio keeps the fuller pane — it's the one block of real prose. */
+.glass-card--prose .lg__shape { padding: var(--s-5) var(--s-6); }
+.glass-card .lg__content > :first-child { margin-top: 0; }
+.glass-card .lg__content > :last-child { margin-bottom: 0; }
+.glass-card .intro__links { margin-top: 0; }
+
+/* Prose inherits the card's light ink instead of the page's blue. */
+.glass-card p { color: inherit; }

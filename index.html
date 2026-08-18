@@ -75,22 +75,55 @@
             <span class="wordmark__side" data-wordmark-side>dru</span><span class="wordmark__dot">·</span><span class="wordmark__side" data-wordmark-side>uly</span>
           </h1>
 
-          <p class="intro__caption" data-reveal data-reveal-delay="100">
-            engineering, philosophy
-          </p>
+          <!-- Same pane as the bio. No data-reveal on any of them: the fade
+               holds the card below opacity 1, and a translucent ancestor stops
+               the backdrop being sampled — the glass would arrive late. -->
+          <div class="glass-card"
+               data-liquid-glass
+               data-displacement-scale="90"
+               data-blur-amount="0.1"
+               data-corner-radius="50"
+               data-elasticity="0.05"
+               data-glass-container=".panel--intro">
+            <p class="intro__caption">
+              engineering, philosophy
+            </p>
+          </div>
 
-          <p class="intro__bio" data-reveal data-reveal-delay="180">
-            hey, i'm oscar euceda. this website is my attempt to share my mind with the world. 
-            please feel free to peruse my writing and scrutinize my projects. thanks for being here
-          </p>
+          <!-- The bio rides on a pane of liquid glass: liquid-glass.js upgrades
+               anything carrying data-liquid-glass, moving the text into a sharp
+               layer over the bent, blurred tide behind it. -->
+          <!-- No data-reveal on this one: the fade would hold the card at
+               opacity < 1, and a translucent ancestor stops the backdrop from
+               being sampled — the glass would only appear once the fade ended. -->
+          <div class="glass-card glass-card--prose"
+               data-liquid-glass
+               data-displacement-scale="90"
+               data-blur-amount="0.1"
+               data-corner-radius="60"
+               data-elasticity="0.05"
+               data-glass-container=".panel--intro">
+            <p class="intro__bio">
+              hey, i'm oscar euceda. this website is my attempt to share my mind with the world.
+              please feel free to peruse my writing and scrutinize my projects. thanks for being here
+            </p>
+          </div>
 
-          <ul class="intro__links" data-reveal data-reveal-delay="240">
-            <li><a href="oscareucedaf1@gmail.com">Email</a></li>
-            <li><a href="https://github.com/druuly">GitHub</a></li>
-            <li><a href="https://www.instagram.com/druuly">Instagram</a></li>
-            <li><a href="https://www.youtube.com/@druulytube">YouTube</a></li>
-            <li><a href="https://www.linkedin.com/in/oscar-euceda-753477338/">LinkedIn</a></li>
-          </ul>
+          <div class="glass-card"
+               data-liquid-glass
+               data-displacement-scale="90"
+               data-blur-amount="0.1"
+               data-corner-radius="70"
+               data-elasticity="0.05"
+               data-glass-container=".panel--intro">
+            <ul class="intro__links">
+              <li><a href="oscareucedaf1@gmail.com">Email</a></li>
+              <li><a href="https://github.com/druuly">GitHub</a></li>
+              <li><a href="https://www.instagram.com/druuly">Instagram</a></li>
+              <li><a href="https://www.youtube.com/@druulytube">YouTube</a></li>
+              <li><a href="https://www.linkedin.com/in/oscar-euceda-753477338/">LinkedIn</a></li>
+            </ul>
+          </div>
         </div>
 
         <div class="intro__portrait" data-reveal data-reveal-delay="140">
