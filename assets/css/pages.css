@@ -20,6 +20,22 @@
 
 /* --- panel 1: intro ------------------------------------------------------- */
 
+/* The tide, sitting behind the intro copy. beach.js renders into it; without
+   JS (or without WebGL) this gradient is the whole effect. */
+#beach-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: linear-gradient(38deg, #33455C 0%, #5B7E9E 20%, #8FAFB2 31%,
+    #FBF8F1 37%, #E4D9BE 43%, #F5F1E8 100%);
+}
+
 .intro {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);

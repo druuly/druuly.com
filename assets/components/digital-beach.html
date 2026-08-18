@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dru·uly — digital beach</title>
+<style>
+  /* ---------- the only CSS the shader itself needs ---------- */
+  html, body { margin: 0; height: 100%; }
+
+  #beach-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;              /* sits behind all your content */
+    pointer-events: none;     /* clicks pass straight through */
+    display: block;
+    /* this is what makes the low-res buffer look like chunky pixels
+       instead of a blurry smear when the browser scales it up */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* JS sets --page-bg from the active palette so the page behind the
+     canvas always matches (matters for the split second before WebGL
+     boots, and for any area the canvas doesn't cover) */
+  body { background: var(--page-bg, #F5F1E8); }
+
+  /* ================= demo page content — delete all of this ============= */
+  body {
+    font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink, #5B7E9E);
+    min-height: 100dvh;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 26px 40px; }
+
+  nav { display: flex; justify-content: space-between; align-items: baseline; }
+  .mark {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.5rem; color: var(--gold, #C4972A); letter-spacing: .01em;
+  }
+  .links { display: flex; gap: 28px; font-size: .95rem; }
+  .links a { text-decoration: none; }
+  .c1 { color: var(--slate, #5B7E9E); }
+  .c2 { color: var(--crimson, #C4415F); }
+  .c3 { color: var(--green, #3E9161); }
+  .c4 { color: var(--purple, #7B3FD4); }
+
+  .hero { padding: 14vh 0 0; max-width: 44rem; }
+  .hero h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400; font-size: clamp(3rem, 9vw, 6.5rem);
+    color: var(--gold, #C4972A); margin: 0; line-height: 1;
+  }
+  .hero h1 span { color: var(--orange, #D9663A); }
+  .hero h2 {
+    font-weight: 400; font-style: italic; font-size: 1.4rem;
+    color: var(--muted, #7C7C7A); margin: .5em 0 1.2em;
+  }
+  .hero p { font-size: 1.05rem; line-height: 1.75; margin: 0 0 1.8em; max-width: 34rem; }
+  .social { display: flex; gap: 26px; font-size: .95rem; }
+  .social a { text-decoration: none; }
+
+  .pal {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+    display: flex; gap: 10px; font-size: .8rem; z-index: 2;
+  }
+  .pal button {
+    font: inherit; cursor: pointer; padding: 7px 15px;
+    border: 1px solid currentColor; background: transparent;
+    color: var(--muted, #7C7C7A); border-radius: 2px;
+  }
+  .pal button[aria-pressed="true"] { color: var(--gold, #C4972A); }
+  /* ===================================================================== */
+</style>
+</head>
+<body>
+
+<canvas id="beach-canvas" aria-hidden="true"></canvas>
+
+<!-- demo content, delete -->
+<div class="wrap">
+  <nav>
+    <div class="mark">dru<span style="color:var(--orange)">·</span>uly</div>
+    <div class="links">
+      <a class="c1" href="#">index</a>
+      <a class="c2" href="#">work</a>
+      <a class="c3" href="#">writing</a>
+      <a class="c4" href="#">about</a>
+    </div>
+  </nav>
+  <div class="hero">
+    <h1>dru<span>·</span>uly</h1>
+    <h2>engineering, philosophy</h2>
+    <p>hey, i'm oscar euceda. this website is my attempt to share my mind with the world. please feel free to peruse my writing and scrutinize my projects. thanks for being here</p>
+    <div class="social">
+      <a class="c2" href="#">email</a>
+      <a class="c4" href="#">github</a>
+      <a class="c2" href="#">instagram</a>
+      <a href="#" style="color:var(--gold)">youtube</a>
+      <a class="c3" href="#">linkedin</a>
+    </div>
+  </div>
+</div>
+<div class="pal">
+  <button data-pal="parchment" aria-pressed="true">parchment</button>
+  <button data-pal="seaglass"  aria-pressed="false">seaglass</button>
+  <button data-pal="midnight"  aria-pressed="false">midnight</button>
+</div>
+
+<script>
+/* ============================================================================
+   DIGITAL BEACH — vanilla WebGL fragment shader, no dependencies.
+   Palette drawn from the dru·uly site.
+
+   HOW TO USE ON YOUR SITE
+   1. copy the <canvas id="beach-canvas"> tag into your <body>
+   2. copy the #beach-canvas CSS rule
+   3. copy this whole <script> block
+   Everything is namespaced inside one IIFE.
+
+   Pick a palette with CONFIG.palette below, or live-switch from the console:
+       digitalBeach.setPalette('midnight')
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------ */
+  /*  PALETTES                                                           */
+  /* ------------------------------------------------------------------ */
+  const PALETTES = {
+
+    /* THE SAFE ONE. Dry sand IS your page background, so the beach dissolves
+       into the page in the top-right and never announces itself. Everything
+       sits within a narrow tonal band of the cream, so your existing slate
+       body text keeps roughly the contrast it has today, even over water.
+       The gold and orange survive only as tiny shells and pebbles.        */
+    parchment: {
+      pageBg:  '#F5F1E8',
+
+      deep:    '#B9C7CE',   // far water
+      mid:     '#CBD6D6',
+      shallow: '#DAE1DA',
+      shine:   '#E6E9DE',   // water skimming bright sand
+      foam:    '#FDFCF7',
+
+      sandA:   '#EAE0C8',   // sand right at the water
+      sandB:   '#F1EADB',
+      sandC:   '#F5F1E8',   // dry sand = your page background exactly
+
+      pebble:  '#CFC6B4',
+      shell:   '#D8B45E',   // your gold, softened
+      accent:  '#E0906A',   // the wordmark's orange dot, softened
+
+      // pull the scene toward pageBg. 0 = full strength, 1 = invisible.
+      wash:    0.10,
+      levels:  32,          // palette steps per channel
+      glitter: 0.9990,      // sparkle threshold (higher = rarer)
+
+      ui: { ink:'#5B7E9E', gold:'#C4972A', orange:'#D9663A', crimson:'#C4415F',
+            green:'#3E9161', purple:'#7B3FD4', slate:'#5B7E9E', muted:'#7C7C7A' }
+    },
+
+    /* THE BOLD ONE. Same palette family, full strength: water runs from your
+       body-text slate down to a deep muted navy. Gorgeous, but the water is
+       mid-tone, so only use it if your text sits in a card or you darken it
+       (this preset's UI ink is already darkened to suit).                  */
+    seaglass: {
+      pageBg:  '#F5F1E8',
+
+      deep:    '#33455C',
+      mid:     '#5B7E9E',   // your body-text slate, as the sea
+      shallow: '#8FAFB2',
+      shine:   '#BCCFC9',
+      foam:    '#FBF8F1',
+
+      sandA:   '#E4D9BE',
+      sandB:   '#EFE8D6',
+      sandC:   '#F5F1E8',
+
+      pebble:  '#A8A093',
+      shell:   '#C4972A',   // your gold
+      accent:  '#D9663A',   // the orange dot
+
+      wash:    0.18,
+      levels:  26,
+      glitter: 0.9988,
+
+      ui: { ink:'#243244', gold:'#B0841B', orange:'#C4562B', crimson:'#A82F4B',
+            green:'#2E7A4C', purple:'#632FB0', slate:'#243244', muted:'#5C6470' }
+    },
+
+    /* Same beach at 2am. Cold water, gray-violet sand, moonlit whitewater,
+       and your gold surviving as the odd warm ember in the shells.         */
+    midnight: {
+      pageBg:  '#0B0F1A',
+
+      deep:    '#080C16',
+      mid:     '#12203A',
+      shallow: '#1E4B60',
+      shine:   '#35818A',
+      foam:    '#CBDCE2',
+
+      sandA:   '#1C1C26',
+      sandB:   '#2A2833',
+      sandC:   '#37333F',
+
+      pebble:  '#4B4655',
+      shell:   '#6E6478',
+      accent:  '#C4972A',   // your gold, as embers on the sand
+
+      wash:    0.06,
+      levels:  30,
+      glitter: 0.9972,      // more sparkle — moonlight on the water
+
+      ui: { ink:'#8FA6BE', gold:'#C4972A', orange:'#D9663A', crimson:'#D0637F',
+            green:'#5FB183', purple:'#9B6BE8', slate:'#8FA6BE', muted:'#6E7180' }
+    }
+  };
+
+  const CONFIG = {
+    // which palette above to start on
+    palette: 'parchment',
+
+    // Size of one "16-bit pixel" in CSS pixels. Bigger = chunkier.
+    pixelSize: 4,
+
+    // Bounds on the internal buffer width: cap keeps big monitors cheap,
+    // floor keeps phones from getting so blocky the scene stops reading.
+    maxInternalWidth: 520,
+    minInternalWidth: 170,
+
+    // Global animation speed. 1 = as tuned, 0.5 = dreamy, 2 = choppy sea.
+    speed: 1.0,
+
+    // Freeze on a still frame if the OS asks for reduced motion.
+    respectReducedMotion: true
+  };
+
+  const canvas = document.getElementById('beach-canvas');
+  if (!canvas) return;
+
+  function hex(h) {
+    const n = parseInt(h.slice(1), 16);
+    return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
+  }
+
+  const gl = canvas.getContext('webgl', {
+    antialias: false, depth: false, stencil: false, powerPreference: 'low-power'
+  }) || canvas.getContext('experimental-webgl');
+
+  // Graceful fallback: no WebGL, paint a flat gradient from the palette.
+  if (!gl) {
+    const p = PALETTES[CONFIG.palette];
+    document.documentElement.style.setProperty('--page-bg', p.pageBg);
+    canvas.style.background =
+      `linear-gradient(38deg, ${p.deep} 0%, ${p.mid} 20%, ${p.shallow} 31%,
+       ${p.foam} 37%, ${p.sandA} 43%, ${p.sandC} 100%)`;
+    return;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  VERTEX SHADER — one fullscreen triangle                            */
+  /* ------------------------------------------------------------------ */
+  const VERT = `
+    attribute vec2 aPos;
+    void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
+  `;
+
+  /* ------------------------------------------------------------------ */
+  /*  FRAGMENT SHADER — the actual beach                                 */
+  /* ------------------------------------------------------------------ */
+  const FRAG = `
+precision highp float;
+
+uniform vec2  uRes;    // internal buffer size, in shader-pixels
+uniform float uTime;   // seconds
+
+/* palette, fed from the PALETTES table in JS */
+uniform vec3  C_DEEP, C_MID, C_SHALLOW, C_SHINE, C_FOAM;
+uniform vec3  C_SAND_A, C_SAND_B, C_SAND_C;
+uniform vec3  C_PEBBLE, C_SHELL, C_ACCENT;
+uniform vec3  uWashCol;   // colour the scene fades toward (the page bg)
+uniform float uWash;      // how far it fades, 0..1
+uniform float uLevels;    // palette steps per channel
+uniform float uGlitter;   // sparkle threshold
+
+/* Where the resting waterline sits. 0 = bottom-left corner, 1 = top-right.
+   Lower it for more sand, raise it for more ocean. */
+const float SHORE = 0.41;
+
+/* Direction the waves travel: out of the bottom-left corner, up and right.
+   Change this vector to swing the whole coastline around. */
+const vec2  SHORE_DIR = vec2(0.545, 0.838);
+
+/* ---------- hash / noise helpers ---------- */
+float hash21(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+
+/* better-distributed hash, used anywhere a grid artefact would show */
+float hash12(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+float vnoise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i);
+  float b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0));
+  float d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+
+/* ---------- ordered (Bayer) dithering ----------
+   The console trick: instead of a smooth gradient, flip between two palette
+   colours on a fixed pixel lattice. Reads as texture, not as a blur. */
+float bayer2(vec2 a) { a = floor(a); return fract(a.x * 0.5 + a.y * a.y * 0.75); }
+float bayer4(vec2 a) { return bayer2(0.5 * a) * 0.25 + bayer2(a); }
+float bayer8(vec2 a) { return bayer4(0.5 * a) * 0.25 + bayer2(a); }
+
+/* ---------- one wave's run-up cycle ----------
+   ph 0.00 -> 0.13 : the rush, water sprints up the sand
+   ph 0.18 -> 1.00 : the drain, long lazy retreat
+   reach = where the water edge is right now
+   peak  = the furthest it got this cycle (the foam it left behind)
+   fade  = how much of that leftover foam is still visible              */
+void waveCycle(float t, float period, float offs,
+               out float reach, out float peak, out float fade) {
+  float ph   = fract(t / period + offs);
+  float rush = smoothstep(0.0, 0.13, ph);
+  float back = 1.0 - smoothstep(0.18, 1.0, ph);
+  reach = pow(clamp(rush * back, 0.0, 1.0), 0.75);
+
+  float pph = min(ph, 0.155);
+  peak = pow(clamp(smoothstep(0.0, 0.13, pph) *
+                   (1.0 - smoothstep(0.18, 1.0, pph)), 0.0, 1.0), 0.75);
+  fade = 1.0 - smoothstep(0.16, 0.80, ph);
+}
+
+void main() {
+  vec2  fc     = gl_FragCoord.xy;         // integer shader-pixel coords
+  float aspect = uRes.x / uRes.y;
+
+  // world space: y in [0,1], x stretched by aspect, so the coastline angle
+  // holds its shape on any screen
+  vec2 P = fc / uRes.y;
+
+  vec2  dir  = normalize(SHORE_DIR);
+  vec2  perp = vec2(-dir.y, dir.x);
+
+  float sMax = dir.x * aspect + dir.y;
+  float s    = dot(P, dir) / sMax;        // 0..1 "up the beach"
+  float u    = dot(P, perp);              // sideways along the shoreline
+
+  float t = uTime;
+
+  /* ---------------- the waterline ---------------- */
+
+  // wobble, so the coast isn't a ruler-straight diagonal
+  float wob = 0.020 * sin(u * 5.3 + 0.7)
+            + 0.011 * sin(u * 11.7 - 1.9)
+            + 0.014 * vnoise(vec2(u * 2.2, t * 0.06));
+
+  float swell = 0.011 * sin(t * 0.55 + u * 3.1);   // slow breathing
+  float base  = SHORE + wob + swell;
+
+  // three overlapping wave sets, coprime-ish periods so the pattern takes
+  // a long time to visibly repeat
+  float r1, p1, f1, r2, p2, f2, r3, p3, f3;
+  waveCycle(t, 11.0, 0.00, r1, p1, f1);
+  waveCycle(t,  7.3, 0.41, r2, p2, f2);
+  waveCycle(t,  4.7, 0.73, r3, p3, f3);
+
+  const float A1 = 0.150, A2 = 0.096, A3 = 0.058;
+
+  // per-wave edge jitter, so each tongue of water has its own shape
+  float j1 = 0.016 * sin(u *  7.9 + 1.3);
+  float j2 = 0.013 * sin(u * 13.1 - 0.6);
+  float j3 = 0.010 * sin(u * 17.7 + 2.4);
+
+  float e1 = base + A1 * r1 + j1 * r1;
+  float e2 = base + A2 * r2 + j2 * r2;
+  float e3 = base + A3 * r3 + j3 * r3;
+  float wEdge = max(max(e1, e2), e3);     // furthest-reaching wave wins
+
+  // ragged pixel edge instead of a clean analytic line
+  wEdge += (vnoise(vec2(u * 34.0, t * 0.9)) - 0.5) * 0.010;
+
+  float depth = wEdge - s;                // > 0 means we're in the water
+
+  /* ---------------- SAND ---------------- */
+
+  float up = max(s - wEdge, 0.0);         // how far up the beach from water
+
+  float lvl = clamp(up * 2.9, 0.0, 1.0);
+  lvl += vnoise(P * 7.0) * 0.16 - 0.08;   // broad patchiness
+  lvl += (bayer8(fc) - 0.5) * 0.14;       // dithered band borders
+
+  vec3 col = (lvl < 0.30) ? C_SAND_A : (lvl < 0.62) ? C_SAND_B : C_SAND_C;
+
+  // per-pixel grain
+  float grain = hash12(fc + 11.0);
+  if (grain > 0.90)      col *= 1.035;
+  else if (grain < 0.10) col *= 0.965;
+
+  // scattered shells & pebbles on a jittered grid
+  vec2  cell = floor(P * 24.0);
+  float ch   = hash12(cell * 1.73 + 5.0);
+  if (ch > 0.950) {
+    vec2  cp = fract(P * 24.0);
+    vec2  co = vec2(hash12(cell + 3.1), hash12(cell + 7.7));
+    float dd = length(cp - co);
+    float rad = (ch > 0.984) ? 0.18 : 0.13;
+    if (dd < rad) {
+      col = (ch > 0.9955) ? C_ACCENT        // rare: the orange dot
+          : (ch > 0.984)  ? C_SHELL         // uncommon: gold shells
+                          : C_PEBBLE;       // common: pebbles
+    }
+  }
+
+  // leftover foam lace on wet sand, from waves that already pulled back
+  float trail = max(max(step(s, base + A1 * p1) * f1,
+                        step(s, base + A2 * p2) * f2),
+                        step(s, base + A3 * p3) * f3);
+  float lace = vnoise(vec2(u * 26.0, s * 90.0 - t * 0.4));
+  if (trail > 0.05 && s > wEdge &&
+      lace + trail * 0.62 > 0.96 + (bayer4(fc) - 0.5) * 0.30) {
+    col = mix(col, C_FOAM, 0.85);
+  }
+
+  /* ---------------- WATER ---------------- */
+
+  if (depth > 0.0) {
+    float wd = clamp(depth / 0.36, 0.0, 1.0);
+    wd += (bayer4(fc) - 0.47) * 0.10;     // dither the depth bands
+
+    col = (wd > 0.70) ? C_DEEP
+        : (wd > 0.40) ? C_MID
+        : (wd > 0.15) ? C_SHALLOW
+                      : C_SHINE;
+
+    // swell lines rolling in across the open water
+    float ripple = sin(s * 54.0 - t * 1.45
+                       + vnoise(vec2(u * 2.6, t * 0.14)) * 3.4);
+    if (depth > 0.10 && ripple > 0.80 + (bayer4(fc) - 0.5) * 0.5) {
+      col = mix(col, C_SHINE, 0.45);
+    }
+
+    // sun / moon glitter: single pixels blinking on the surface
+    float g = hash12(floor(fc) + vec2(floor(t * 6.0) * 17.31,
+                                      floor(t * 6.0) *  9.73));
+    if (depth > 0.13 && g > uGlitter) col = C_FOAM;
+
+    // whitewater along the leading edge, thicker while a wave is rushing
+    float rushAmt = max(max(r1, r2), r3);
+    float foamW   = 0.012 + 0.030 * rushAmt;
+    float fEdge   = depth / foamW;        // 0 at the very tip of the water
+    if (fEdge < 1.0) {
+      float n = vnoise(vec2(u * 30.0, t * 1.1));
+      if (1.0 - fEdge > 0.16 + n * 0.42 + (bayer4(fc) - 0.5) * 0.34) col = C_FOAM;
+    }
+
+    // a second, softer foam line just behind the crest
+    if (fEdge > 0.9 && fEdge < 2.2) {
+      float n2 = vnoise(vec2(u * 22.0 + 9.0, t * 0.8));
+      if (n2 > 0.70 + (bayer4(fc) - 0.5) * 0.4) col = mix(col, C_FOAM, 0.7);
+    }
+  }
+
+  /* ---------------- wash + palette crunch ----------------
+     Fade toward the page background so foreground text stays readable,
+     THEN quantise, so the result still lives on a small hard palette
+     rather than turning into a smooth gradient. */
+  col = mix(col, uWashCol, uWash);
+  col = floor(col * uLevels + bayer8(fc + 3.0)) / uLevels;
+
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+}
+  `;
+
+  /* ------------------------------------------------------------------ */
+  /*  compile, link, draw                                                */
+  /* ------------------------------------------------------------------ */
+  function compile(type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.error('beach shader:', gl.getShaderInfoLog(sh));
+      return null;
+    }
+    return sh;
+  }
+
+  const vs = compile(gl.VERTEX_SHADER, VERT);
+  const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error('beach shader link:', gl.getProgramInfoLog(prog));
+    return;
+  }
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(prog, 'aPos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const U = {};
+  ['uRes','uTime','C_DEEP','C_MID','C_SHALLOW','C_SHINE','C_FOAM',
+   'C_SAND_A','C_SAND_B','C_SAND_C','C_PEBBLE','C_SHELL','C_ACCENT',
+   'uWashCol','uWash','uLevels','uGlitter'
+  ].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+
+  function applyPalette(name) {
+    const p = PALETTES[name] || PALETTES.parchment;
+    CONFIG.palette = name;
+
+    gl.uniform3fv(U.C_DEEP,    hex(p.deep));
+    gl.uniform3fv(U.C_MID,     hex(p.mid));
+    gl.uniform3fv(U.C_SHALLOW, hex(p.shallow));
+    gl.uniform3fv(U.C_SHINE,   hex(p.shine));
+    gl.uniform3fv(U.C_FOAM,    hex(p.foam));
+    gl.uniform3fv(U.C_SAND_A,  hex(p.sandA));
+    gl.uniform3fv(U.C_SAND_B,  hex(p.sandB));
+    gl.uniform3fv(U.C_SAND_C,  hex(p.sandC));
+    gl.uniform3fv(U.C_PEBBLE,  hex(p.pebble));
+    gl.uniform3fv(U.C_SHELL,   hex(p.shell));
+    gl.uniform3fv(U.C_ACCENT,  hex(p.accent));
+    gl.uniform3fv(U.uWashCol,  hex(p.pageBg));
+    gl.uniform1f(U.uWash,    p.wash);
+    gl.uniform1f(U.uLevels,  p.levels);
+    gl.uniform1f(U.uGlitter, p.glitter);
+
+    // keep the page (and the demo chrome) in step with the palette
+    const root = document.documentElement.style;
+    root.setProperty('--page-bg', p.pageBg);
+    if (p.ui) Object.keys(p.ui).forEach(k => root.setProperty('--' + k, p.ui[k]));
+  }
+
+  function resize() {
+    const cssW = canvas.clientWidth  || window.innerWidth;
+    const cssH = canvas.clientHeight || window.innerHeight;
+
+    let w = Math.round(cssW / CONFIG.pixelSize);
+    w = Math.min(CONFIG.maxInternalWidth, Math.max(CONFIG.minInternalWidth, w));
+    const h = Math.max(64, Math.round(w * cssH / cssW));
+
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w; canvas.height = h;
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(U.uRes, w, h);
+    }
+  }
+
+  const reduced = CONFIG.respectReducedMotion &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let clock = 0, last = performance.now(), running = true, raf = 0;
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    const dt = Math.min((now - last) / 1000, 0.1);   // clamp after tab switches
+    last = now;
+    if (!reduced) clock += dt * CONFIG.speed;
+    resize();
+    gl.uniform1f(U.uTime, clock);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (reduced) cancelAnimationFrame(raf);          // one still frame only
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (running) { cancelAnimationFrame(raf); running = false; }
+    } else if (!running) {
+      running = true; last = performance.now(); raf = requestAnimationFrame(frame);
+    }
+  });
+  window.addEventListener('resize', resize, { passive: true });
+
+  applyPalette(CONFIG.palette);
+  resize();
+  raf = requestAnimationFrame(frame);
+
+  window.digitalBeach = {
+    config: CONFIG,
+    palettes: PALETTES,
+    setPalette: function (n) { applyPalette(n); gl.drawArrays(gl.TRIANGLES, 0, 3); },
+    setTime: function (t) { clock = t; },
+    canvas: canvas
+  };
+})();
+
+/* ---- demo-only palette switcher, delete with the rest of the demo ---- */
+document.querySelectorAll('.pal button').forEach(function (b) {
+  b.addEventListener('click', function () {
+    window.digitalBeach.setPalette(b.dataset.pal);
+    document.querySelectorAll('.pal button').forEach(function (o) {
+      o.setAttribute('aria-pressed', String(o === b));
+    });
+  });
+});
+</script>
+</body>
+</html>

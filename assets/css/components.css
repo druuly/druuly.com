@@ -22,6 +22,10 @@
   white-space: nowrap;
 }
 
+.wordmark__side {
+  transition: color var(--dur-slow) var(--ease);
+}
+
 .wordmark__dot {
   color: var(--orange);
   /* Optical centering — the interpunct sits high in most serifs. */
@@ -35,6 +39,21 @@
 
 .wordmark--sm   { font-size: var(--t-lead); }
 .wordmark--mega { font-size: var(--t-mega); letter-spacing: -0.045em; }
+
+/* OPENING — intro.js adds .is-intro to <html> while the hero dot pulls back
+   from the viewer to its place. The letters hold off until it lands.
+   Without JS the class is never set, so the hero just sits there. */
+.wordmark--mega .wordmark__side {
+  transition: opacity 420ms var(--ease), color var(--dur-slow) var(--ease);
+}
+
+.is-intro .wordmark--mega .wordmark__side { opacity: 0; }
+
+/* Above the letters and the portrait while it's flying in. */
+.is-intro .wordmark--mega .wordmark__dot {
+  position: relative;
+  z-index: 3;
+}
 
 /* The definition line under the mark, set small in the same serif. */
 .wordmark-caption {

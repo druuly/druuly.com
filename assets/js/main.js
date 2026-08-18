@@ -11,6 +11,9 @@ import { initReveal } from './reveal.js';
 import { initAutoLoops, initHoverPlay, initMediaFade } from './media.js';
 import { initFilters } from './filter.js';
 import { initCarousels } from './carousel.js';
+import { initWordmarkColor } from './wordmark-color.js';
+import { initIntro } from './intro.js';
+import { initBeach } from './beach.js';
 
 function boot() {
   markCurrentPage();
@@ -21,6 +24,9 @@ function boot() {
   initMediaFade();
   initFilters();
   initCarousels();
+  initWordmarkColor();
+  initIntro();
+  initBeach();
 }
 
 // Modules are deferred by default, but guard anyway in case that changes.
