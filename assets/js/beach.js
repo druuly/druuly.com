@@ -86,25 +86,67 @@ float vnoise(vec2 p) {
   return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
+/* Three octaves, roughly normalised to 0..1. Foam wants this rather than a
+   single vnoise: one octave gives evenly-sized speckle, three give clumps
+   with smaller bubbles inside them. */
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 3; i++) { v += a * vnoise(p); p *= 2.03; a *= 0.5; }
+  return v / 0.875;
+}
+
 /* Ordered (Bayer) dithering: flip between two palette colours on a fixed
    pixel lattice instead of blending, so it reads as texture, not blur. */
 float bayer2(vec2 a) { a = floor(a); return fract(a.x * 0.5 + a.y * a.y * 0.75); }
 float bayer4(vec2 a) { return bayer2(0.5 * a) * 0.25 + bayer2(a); }
 float bayer8(vec2 a) { return bayer4(0.5 * a) * 0.25 + bayer2(a); }
 
-/* One wave's run-up cycle: a quick rush up the sand, then a long drain.
+/* Softened max. A hard max() between two wave edges is C1-discontinuous:
+   the instant one wave overtakes another the edge velocity jumps, which
+   reads as a kink at the front of the surge. */
+float smax(float a, float b, float k) {
+  float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);
+  return mix(b, a, h) + k * h * (1.0 - h);
+}
+
+const float TAU   = 6.2831853;
+const float ASYM  = 0.80;   /* how much faster the run-up is than the drain */
+const float UNDER = 0.26;   /* how far the backwash pulls past the shoreline */
+
+/* Phase warp. Monotone on 0..1 with w(0)=0, w(1)=1 and w'=1 at both ends,
+   but w' > 1 early and < 1 late, so the run-up takes ~32% of the cycle and
+   the backwash the remaining ~68% without either one ever stalling. */
+float warpPhase(float ph) {
+  return ph + ASYM * (1.0 - cos(TAU * ph)) / TAU;
+}
+
+/* One wave's swash cycle: a run-up, then a backwash that drags the edge
+   past the resting line before the next wave gathers.
+
+   Built as a single warped cosine rather than a rise curve plus a separate
+   undershoot lobe. Two curves added together turn back on each other: the
+   edge receded, held, drifted back up, then receded again. This has exactly
+   one crest and one trough, and the trough sits on the cycle wrap, so the
+   turnaround into the next wave is the same smooth motion.
+
    reach = the water edge right now. peak/fade = the foam it left behind. */
 void waveCycle(float t, float period, float offs,
                out float reach, out float peak, out float fade) {
-  float ph   = fract(t / period + offs);
-  float rush = smoothstep(0.0, 0.13, ph);
-  float back = 1.0 - smoothstep(0.18, 1.0, ph);
-  reach = pow(clamp(rush * back, 0.0, 1.0), 0.75);
+  /* A slow, non-periodic drift on the phase. Fixed periods eventually
+     relock with each other and the whole pattern visibly repeats; this
+     keeps them from ever lining up the same way twice. */
+  float drift = 0.055 * (vnoise(vec2(t * 0.017, offs * 37.0)) - 0.5);
+  float ph    = fract(t / period + offs + drift);
 
-  float pph = min(ph, 0.155);
-  peak = pow(clamp(smoothstep(0.0, 0.13, pph) *
-                   (1.0 - smoothstep(0.18, 1.0, pph)), 0.0, 1.0), 0.75);
-  fade = 1.0 - smoothstep(0.16, 0.80, ph);
+  float swash = 0.5 - 0.5 * cos(TAU * warpPhase(ph));
+
+  /* Lifted so the crest still reaches 1.0 and the trough sits below zero. */
+  reach = swash * (1.0 + UNDER) - UNDER;
+
+  /* High-water mark: the swash value frozen at the crest, then fading. */
+  float pph = min(ph, 0.315);
+  peak = 0.5 - 0.5 * cos(TAU * warpPhase(pph));
+  fade = 1.0 - smoothstep(0.36, 0.98, ph);
 }
 
 void main() {
@@ -124,15 +166,21 @@ void main() {
 
   float wob = 0.020 * sin(u * 5.3 + 0.7)
             + 0.011 * sin(u * 11.7 - 1.9)
-            + 0.014 * vnoise(vec2(u * 2.2, t * 0.06));
+            + 0.014 * vnoise(vec2(u * 2.2, t * 0.04));
 
-  float swell = 0.011 * sin(t * 0.55 + u * 3.1);
-  float base  = SHORE + wob + swell;
+  float swell = 0.011 * sin(t * 0.34 + u * 3.1);
 
+  /* A long, slow breath under everything, so the resting line itself is
+     never actually at rest between waves. */
+  float tide  = 0.013 * (vnoise(vec2(u * 0.9, t * 0.030)) - 0.5) * 2.0;
+  float base  = SHORE + wob + swell + tide;
+
+  /* Long, and mutually awkward. 11.0 / 7.3 was very nearly 3:2, so the big
+     and mid waves relocked and the whole pattern repeated every ~22s. */
   float r1, p1, f1, r2, p2, f2, r3, p3, f3;
-  waveCycle(t, 11.0, 0.00, r1, p1, f1);
-  waveCycle(t,  7.3, 0.41, r2, p2, f2);
-  waveCycle(t,  4.7, 0.73, r3, p3, f3);
+  waveCycle(t, 27.7, 0.00, r1, p1, f1);
+  waveCycle(t, 17.5, 0.37, r2, p2, f2);
+  waveCycle(t, 10.7, 0.71, r3, p3, f3);
 
   const float A1 = 0.150, A2 = 0.096, A3 = 0.058;
 
@@ -143,11 +191,16 @@ void main() {
   float e1 = base + A1 * r1 + j1 * r1;
   float e2 = base + A2 * r2 + j2 * r2;
   float e3 = base + A3 * r3 + j3 * r3;
-  float wEdge = max(max(e1, e2), e3);
+  float wEdge = smax(smax(e1, e2, 0.030), e3, 0.030);
 
-  wEdge += (vnoise(vec2(u * 34.0, t * 0.9)) - 0.5) * 0.010;
+  wEdge += (vnoise(vec2(u * 34.0, t * 0.55)) - 0.5) * 0.010;
 
   float depth = wEdge - s;
+
+  /* Shore-aligned frame with matched scales on both axes. s is normalised
+     across the diagonal, u is not, so sampling noise as vec2(u, s) is
+     anisotropic - which is exactly what turned foam into streaks. */
+  vec2 fp = vec2(u, s * sMax);
 
   /* sand */
   float up = max(s - wEdge, 0.0);
@@ -179,9 +232,10 @@ void main() {
   float trail = max(max(step(s, base + A1 * p1) * f1,
                         step(s, base + A2 * p2) * f2),
                         step(s, base + A3 * p3) * f3);
-  float lace = vnoise(vec2(u * 26.0, s * 90.0 - t * 0.4));
+  float lace  = fbm(fp * 30.0 - vec2(0.0, t * 0.15));
+  float lace2 = fbm(fp * 74.0 + vec2(t * 0.06, 0.0));
   if (trail > 0.05 && s > wEdge &&
-      lace + trail * 0.62 > 0.96 + (bayer4(fc) - 0.5) * 0.30) {
+      lace * 0.70 + lace2 * 0.30 + trail * 0.40 > 0.74 + (bayer4(fc) - 0.5) * 0.22) {
     col = mix(col, C_FOAM, 0.85);
   }
 
@@ -195,27 +249,38 @@ void main() {
         : (wd > 0.15) ? C_SHALLOW
                       : C_SHINE;
 
-    float ripple = sin(s * 54.0 - t * 1.45
-                       + vnoise(vec2(u * 2.6, t * 0.14)) * 3.4);
+    float ripple = sin(s * 54.0 - t * 0.95
+                       + vnoise(vec2(u * 2.6, t * 0.10)) * 3.4);
     if (depth > 0.10 && ripple > 0.80 + (bayer4(fc) - 0.5) * 0.5) {
       col = mix(col, C_SHINE, 0.45);
     }
 
-    float g = hash12(floor(fc) + vec2(floor(t * 6.0) * 17.31,
-                                      floor(t * 6.0) *  9.73));
+    float g = hash12(floor(fc) + vec2(floor(t * 4.0) * 17.31,
+                                      floor(t * 4.0) *  9.73));
     if (depth > 0.13 && g > uGlitter) col = C_FOAM;
 
-    float rushAmt = max(max(r1, r2), r3);
-    float foamW   = 0.012 + 0.030 * rushAmt;
+    float rushAmt = clamp(max(max(r1, r2), r3), 0.0, 1.0);
+    float foamW   = 0.014 + 0.030 * rushAmt;
     float fEdge   = depth / foamW;
+
+    /* The breaking edge. Clumps (low octave) with bubbles inside them
+       (high octave), both sampled isotropically so the mask is blobs
+       rather than combs running across the band. */
     if (fEdge < 1.0) {
-      float n = vnoise(vec2(u * 30.0, t * 1.1));
-      if (1.0 - fEdge > 0.16 + n * 0.42 + (bayer4(fc) - 0.5) * 0.34) col = C_FOAM;
+      float n = fbm(fp * 34.0 - vec2(t * 0.09, t * 0.34));
+      float b = fbm(fp * 88.0 + vec2(t * 0.18, -t * 0.58));
+      float thresh = 0.20 + (n - 0.5) * 0.78 + (b - 0.5) * 0.34
+                   + (bayer4(fc) - 0.5) * 0.24;
+      if (1.0 - fEdge > thresh) col = C_FOAM;
     }
 
-    if (fEdge > 0.9 && fEdge < 2.2) {
-      float n2 = vnoise(vec2(u * 22.0 + 9.0, t * 0.8));
-      if (n2 > 0.70 + (bayer4(fc) - 0.5) * 0.4) col = mix(col, C_FOAM, 0.7);
+    /* Loose foam floating just behind the break. */
+    if (fEdge > 0.85 && fEdge < 2.4) {
+      float n2 = fbm(fp * 24.0 + vec2(9.0, -t * 0.18));
+      float b2 = fbm(fp * 62.0 - vec2(t * 0.11, t * 0.30));
+      if (n2 * 0.68 + b2 * 0.32 > 0.60 + (bayer4(fc) - 0.5) * 0.24) {
+        col = mix(col, C_FOAM, 0.7);
+      }
     }
   }
 
